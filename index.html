@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NUST Space Finder — Real-time classroom, lab, and study space booking system for the National University of Science and Technology, Bulawayo, Zimbabwe.">
+  <title>NUST Space Finder | Classroom &amp; Lab Booking</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="assets/logo-mark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       1. DESIGN SYSTEM TOKENS
+       ========================================================================== */
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-deep: #0c4a6e;
+      --primary-light: #e0f2fe;
+      --primary-glow: rgba(2, 132, 199, 0.25);
+      --accent: #f59e0b;
+      --accent-hover: #d97706;
+      --accent-light: #fef3c7;
+      --accent-glow: rgba(245, 158, 11, 0.3);
+      --status-avail: #10b981;
+      --status-avail-bg: #ecfdf5;
+      --status-avail-border: #a7f3d0;
+      --status-avail-text: #065f46;
+      --status-soon: #f59e0b;
+      --status-soon-bg: #fffbeb;
+      --status-soon-border: #fde68a;
+      --status-soon-text: #92400e;
+      --status-busy: #ef4444;
+      --status-busy-bg: #fef2f2;
+      --status-busy-border: #fecaca;
+      --status-busy-text: #991b1b;
+      --status-maint: #8b5cf6;
+      --status-maint-bg: #f5f3ff;
+      --status-maint-border: #ddd6fe;
+      --status-maint-text: #5b21b6;
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-surface: #f1f5f9;
+      --bg-glass: rgba(255, 255, 255, 0.88);
+      --border-subtle: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-subtle: #94a3b8;
+      --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+      --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+      --font-display: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.25s ease;
+      --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body.dark-mode {
+      --bg-body: #090d16;
+      --bg-card: #131b2e;
+      --bg-surface: #1e293b;
+      --bg-glass: rgba(19, 27, 46, 0.9);
+      --border-subtle: #27354f;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+      --status-avail-bg: rgba(16,185,129,0.15);
+      --status-avail-border: rgba(16,185,129,0.3);
+      --status-avail-text: #34d399;
+      --status-soon-bg: rgba(245,158,11,0.15);
+      --status-soon-border: rgba(245,158,11,0.3);
+      --status-soon-text: #fbbf24;
+      --status-busy-bg: rgba(239,68,68,0.15);
+      --status-busy-border: rgba(239,68,68,0.3);
+      --status-busy-text: #f87171;
+      --status-maint-bg: rgba(139,92,246,0.15);
+      --status-maint-border: rgba(139,92,246,0.3);
+      --status-maint-text: #c084fc;
+      --primary-light: #0c4a6e;
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.35);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.45);
+      --shadow-xl: 0 20px 35px rgba(0,0,0,0.6);
+    }
+
+    /* ==========================================================================
+       2. RESET & BASE
+       ========================================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color var(--transition-normal), color var(--transition-normal);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; outline: none; }
+    button { cursor: pointer; border: none; background: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all var(--transition-fast); user-select: none; }
+    a { color: inherit; text-decoration: none; }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+
+    /* ==========================================================================
+       3. SHARED COMPONENTS
+       ========================================================================== */
+    .badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.65rem; border-radius: var(--radius-full); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; }
+    .badge-avail { background: var(--status-avail-bg); color: var(--status-avail-text); border: 1px solid var(--status-avail-border); }
+    .badge-soon  { background: var(--status-soon-bg);  color: var(--status-soon-text);  border: 1px solid var(--status-soon-border); }
+    .badge-busy  { background: var(--status-busy-bg);  color: var(--status-busy-text);  border: 1px solid var(--status-busy-border); }
+    .badge-maint { background: var(--status-maint-bg); color: var(--status-maint-text); border: 1px solid var(--status-maint-border); }
+
+    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; animation: pulse 2s infinite ease-in-out; }
+    .pulse-dot.avail { background: var(--status-avail); box-shadow: 0 0 8px var(--status-avail); }
+    .pulse-dot.soon  { background: var(--status-soon);  box-shadow: 0 0 8px var(--status-soon);  }
+    .pulse-dot.busy  { background: var(--status-busy);  box-shadow: 0 0 8px var(--status-busy);  }
+    .pulse-dot.maint { background: var(--status-maint); box-shadow: 0 0 8px var(--status-maint); }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.85)} }
+
+    .btn { padding: 0.6rem 1.2rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.875rem; box-shadow: var(--shadow-sm); }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; }
+    .btn-primary:hover { box-shadow: 0 4px 12px var(--primary-glow); filter: brightness(1.08); }
+    .btn-accent { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: #fff; font-weight: 700; }
+    .btn-accent:hover { box-shadow: 0 4px 15px var(--accent-glow); filter: brightness(1.05); }
+    .btn-outline { border: 1px solid var(--border-subtle); background: var(--bg-card); color: var(--text-main); }
+    .btn-outline:hover { background: var(--bg-surface); border-color: var(--primary); }
+    .btn-ghost { color: var(--text-muted); }
+    .btn-ghost:hover { background: var(--bg-surface); color: var(--text-main); }
+    .btn-danger { background: var(--status-busy-bg); color: var(--status-busy-text); border: 1px solid var(--status-busy-border); }
+    .btn-danger:hover { background: var(--status-busy); color: white; }
+    .btn-sm { padding: 0.38rem 0.75rem; font-size: 0.775rem; border-radius: var(--radius-sm); }
+    .btn-lg { padding: 0.85rem 1.75rem; font-size: 1rem; border-radius: var(--radius-lg); }
+
+    .form-group { margin-bottom: 1.1rem; }
+    .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.4rem; }
+    .form-control { width: 100%; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.62rem 0.85rem; font-size: 0.9rem; color: var(--text-main); transition: border-color var(--transition-fast), box-shadow var(--transition-fast); }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .checkbox-label { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); cursor: pointer; user-select: none; }
+    .checkbox-label input[type="checkbox"] { accent-color: var(--primary); width: 15px; height: 15px; cursor: pointer; }
+    .checkbox-label:hover { color: var(--text-main); }
+
+    .icon-btn { width: 36px; height: 36px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: var(--bg-card); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .icon-btn:hover { background: var(--bg-surface); color: var(--text-main); }
+
+    /* ==========================================================================
+       4. REMINDER BANNER
+       ========================================================================== */
+    #reminder-banner { display: none; background: linear-gradient(90deg, #b45309, #d97706); color: #fff; padding: 0.7rem 1.25rem; font-size: 0.875rem; font-weight: 500; position: sticky; top: 0; z-index: 1001; box-shadow: var(--shadow-md); animation: slideDown 0.3s ease-out; }
+    .reminder-content { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .reminder-text { display: flex; align-items: center; gap: 0.5rem; }
+    @keyframes slideDown { from{transform:translateY(-100%);opacity:0} to{transform:translateY(0);opacity:1} }
+
+    /* ==========================================================================
+       5. NAVBAR
+       ========================================================================== */
+    .header-nav { position: sticky; top: 0; z-index: 1000; background: var(--bg-glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-subtle); transition: background-color var(--transition-normal), border-color var(--transition-normal); }
+    .nav-container { max-width: 1360px; margin: 0 auto; padding: 0.65rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .brand-logo { display: flex; align-items: center; gap: 0.75rem; font-family: var(--font-display); text-decoration: none; }
+    .brand-emblem-wrap { width: 42px; height: 42px; border-radius: var(--radius-md); background: #eef3fb; border: 1px solid rgba(11, 42, 91, 0.14); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(11, 42, 91, 0.08); transition: transform var(--transition-fast), box-shadow var(--transition-fast); overflow: hidden; flex-shrink: 0; }
+    .brand-logo:hover .brand-emblem-wrap { transform: scale(1.05); box-shadow: 0 4px 12px rgba(242, 169, 0, 0.28); }
+    .brand-logo-img { width: 34px; height: 34px; object-fit: contain; display: block; }
+    body.dark-mode .brand-emblem-wrap { background: #eef3fb; border-color: rgba(255, 255, 255, 0.25); box-shadow: 0 3px 10px rgba(0,0,0,0.4); }
+    .brand-title { display: flex; flex-direction: column; line-height: 1.15; }
+    .brand-name { font-size: 1.15rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 0.35rem; letter-spacing: -0.01em; }
+    .brand-name span { color: var(--primary); }
+    .brand-sub { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; }
+    .nav-tabs { display: flex; background: var(--bg-surface); padding: 0.25rem; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); gap: 0.2rem; }
+    .nav-tab-btn { padding: 0.45rem 0.9rem; border-radius: var(--radius-md); font-size: 0.83rem; font-weight: 600; color: var(--text-muted); transition: all var(--transition-fast); }
+    .nav-tab-btn:hover { color: var(--text-main); }
+    .nav-tab-btn.active { background: var(--bg-card); color: var(--primary); box-shadow: var(--shadow-sm); }
+    .tab-counter { background: var(--accent); color: white; font-size: 0.63rem; padding: 0.1rem 0.4rem; border-radius: var(--radius-full); font-weight: 700; margin-left: 0.25rem; }
+    .nav-actions { display: flex; align-items: center; gap: 0.65rem; }
+    .time-badge { display: none; align-items: center; gap: 0.4rem; padding: 0.38rem 0.75rem; background: var(--bg-surface); border-radius: var(--radius-full); font-size: 0.72rem; font-family: var(--font-mono); color: var(--text-muted); border: 1px solid var(--border-subtle); }
+    @media (min-width: 1024px) { .time-badge { display: flex; } }
+    .role-badge-toggle { display: flex; align-items: center; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-full); padding: 0.18rem 0.22rem; gap: 0.2rem; }
+    .role-btn { padding: 0.28rem 0.7rem; border-radius: var(--radius-full); font-size: 0.73rem; font-weight: 600; color: var(--text-muted); }
+    .role-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 6px var(--primary-glow); }
+    .user-pill { display: flex; align-items: center; gap: 0.45rem; padding: 0.3rem 0.7rem 0.3rem 0.35rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 600; }
+    .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #0284c7, #38bdf8); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; }
+
+    /* ==========================================================================
+       6. HERO SECTION
+       ========================================================================== */
+    .hero-section { background: radial-gradient(120% 120% at 50% 0%, rgba(2,132,199,0.07) 0%, rgba(245,158,11,0.03) 60%, transparent 100%); padding: 2rem 1.25rem 1.75rem; border-bottom: 1px solid var(--border-subtle); }
+    .hero-container { max-width: 860px; margin: 0 auto; text-align: center; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary-light); color: var(--primary-dark); padding: 0.28rem 0.85rem; border-radius: var(--radius-full); font-size: 0.76rem; font-weight: 700; letter-spacing: 0.03em; margin-bottom: 0.9rem; }
+    body.dark-mode .hero-tag { background: rgba(2,132,199,0.2); color: #38bdf8; }
+    .hero-title { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 800; color: var(--text-main); margin-bottom: 0.65rem; line-height: 1.15; }
+    .hero-title .highlight { background: linear-gradient(135deg, var(--primary) 0%, #06b6d4 50%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-desc { font-size: 1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 1.5rem; }
+    .campus-stats-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.65rem; margin-bottom: 1.5rem; }
+    .stat-pill { background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 0.4rem 0.9rem; border-radius: var(--radius-full); display: flex; align-items: center; gap: 0.45rem; font-size: 0.8rem; font-weight: 600; box-shadow: var(--shadow-sm); }
+    .stat-pill .num { font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem; }
+
+    /* Unified Search Bar */
+    .search-bar { max-width: 760px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 0.4rem 0.4rem 0.4rem 1rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: var(--shadow-lg); }
+    .search-bar-icon { color: var(--text-muted); flex-shrink: 0; }
+    .search-bar input { flex: 1; border: none; background: transparent; font-size: 0.9rem; color: var(--text-main); min-width: 0; }
+    .search-bar input::placeholder { color: var(--text-subtle); }
+    .search-bar-divider { width: 1px; height: 24px; background: var(--border-subtle); flex-shrink: 0; }
+    .search-bar select { border: none; background: transparent; font-size: 0.83rem; font-weight: 500; color: var(--text-muted); cursor: pointer; padding: 0 0.25rem; }
+
+    /* ==========================================================================
+       7. MAIN & FILTER PANEL
+       ========================================================================== */
+    .app-main { flex: 1; max-width: 1360px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; width: 100%; }
+
+    .filter-panel { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); overflow: hidden; }
+    .filter-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.1rem; cursor: pointer; user-select: none; gap: 1rem; flex-wrap: wrap; }
+    .filter-panel-header:hover { background: var(--bg-surface); }
+    .filter-header-left { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .filter-toggle-label { font-size: 0.83rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+    .filter-chevron { color: var(--text-subtle); transition: transform var(--transition-fast); }
+    .filter-chevron.open { transform: rotate(180deg); }
+
+    .building-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .filter-chip { padding: 0.32rem 0.7rem; border-radius: var(--radius-full); font-size: 0.77rem; font-weight: 600; border: 1px solid var(--border-subtle); background: var(--bg-surface); color: var(--text-muted); transition: all var(--transition-fast); }
+    .filter-chip:hover { background: var(--bg-card); color: var(--text-main); border-color: var(--primary); }
+    .filter-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 2px 6px var(--primary-glow); }
+
+    .filter-panel-body { padding: 0 1.1rem 1rem; border-top: 1px solid var(--border-subtle); display: none; }
+    .filter-panel-body.open { display: block; }
+    .filter-body-grid { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; padding-top: 0.85rem; }
+    .filter-body-group { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-muted); }
+    .filter-body-group label { white-space: nowrap; font-weight: 600; }
+    .styled-select { background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 0.32rem 0.65rem; border-radius: var(--radius-md); font-size: 0.79rem; color: var(--text-main); cursor: pointer; }
+    .capacity-slider { accent-color: var(--primary); width: 90px; }
+    .slider-val { font-family: var(--font-mono); font-weight: 700; font-size: 0.8rem; min-width: 28px; }
+    .amenities-row { display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; padding-top: 0.75rem; }
+    .amenity-tag-label { font-size: 0.73rem; font-weight: 700; text-transform: uppercase; color: var(--text-subtle); letter-spacing: 0.05em; }
+
+    /* ==========================================================================
+       8. RESULTS HEADER
+       ========================================================================== */
+    .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.1rem; gap: 1rem; flex-wrap: wrap; }
+    .results-count { font-size: 0.88rem; font-weight: 600; color: var(--text-muted); }
+    .results-count strong { color: var(--text-main); }
+
+    /* ==========================================================================
+       9. ROOM GRID & CARDS
+       ========================================================================== */
+    .room-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1.25rem; }
+
+    .room-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.2rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; position: relative; transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal); }
+    .room-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: rgba(2,132,199,0.35); }
+    .room-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.65rem; }
+    .room-code-tag { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 0.2rem 0.5rem; border-radius: var(--radius-sm); }
+    body.dark-mode .room-code-tag { background: rgba(2,132,199,0.25); }
+    .fav-btn { width: 30px; height: 30px; border-radius: 50%; background: var(--bg-surface); color: var(--text-subtle); display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); font-size: 0.9rem; }
+    .fav-btn:hover { color: #ef4444; background: #fee2e2; }
+    .fav-btn.favorited { color: #ef4444; background: #fee2e2; }
+    body.dark-mode .fav-btn.favorited { background: rgba(239,68,68,0.2); }
+    .room-name { font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.2rem; line-height: 1.25; }
+    .room-building { display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+    .room-meta-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.9rem; }
+    .meta-tag { display: inline-flex; align-items: center; gap: 0.25rem; background: var(--bg-surface); padding: 0.22rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.72rem; font-weight: 500; color: var(--text-muted); }
+    .meta-tag strong { color: var(--text-main); }
+    .room-status-indicator { margin-top: auto; padding: 0.55rem 0.8rem; border-radius: var(--radius-md); margin-bottom: 0.9rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; font-weight: 600; }
+    .room-status-indicator.avail  { background: var(--status-avail-bg);  color: var(--status-avail-text);  border: 1px solid var(--status-avail-border);  }
+    .room-status-indicator.soon   { background: var(--status-soon-bg);   color: var(--status-soon-text);   border: 1px solid var(--status-soon-border);   }
+    .room-status-indicator.busy   { background: var(--status-busy-bg);   color: var(--status-busy-text);   border: 1px solid var(--status-busy-border);   }
+    .room-status-indicator.maint  { background: var(--status-maint-bg);  color: var(--status-maint-text);  border: 1px solid var(--status-maint-border);  }
+    .room-card-actions { display: flex; gap: 0.45rem; }
+    .room-card-actions .btn { flex: 1; }
+
+    .empty-state { grid-column: 1/-1; text-align: center; padding: 3.5rem 1rem; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border-subtle); }
+    .empty-state-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .empty-state h3 { margin-bottom: 0.5rem; }
+    .empty-state p { color: var(--text-muted); font-size: 0.88rem; max-width: 440px; margin: 0 auto 1.25rem; }
+
+    /* ==========================================================================
+       10. TIMETABLE
+       ========================================================================== */
+    .timetable-view { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); }
+    .timetable-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1.1rem; border-bottom: 1px solid var(--border-subtle); }
+    .timetable-title h3 { font-size: 1.1rem; }
+    .timetable-title p { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.15rem; }
+    .timetable-date-nav { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
+    .timetable-matrix-container { overflow-x: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
+    .timetable-matrix { width: 100%; border-collapse: collapse; min-width: 950px; }
+    .timetable-matrix th, .timetable-matrix td { border: 1px solid var(--border-subtle); padding: 0.45rem; text-align: center; font-size: 0.78rem; }
+    .timetable-matrix th { background: var(--bg-surface); font-weight: 600; color: var(--text-muted); position: sticky; top: 0; }
+    .timetable-matrix th.room-col { text-align: left; min-width: 180px; position: sticky; left: 0; z-index: 2; background: var(--bg-surface); }
+    .timetable-matrix td.room-col-name { text-align: left; font-weight: 600; position: sticky; left: 0; background: var(--bg-card); z-index: 1; }
+    .slot-cell { height: 46px; padding: 0.2rem !important; vertical-align: middle; cursor: pointer; transition: background-color var(--transition-fast); }
+    .slot-cell.available { background-color: var(--status-avail-bg); color: var(--status-avail-text); }
+    .slot-cell.available:hover { filter: brightness(0.94); }
+    .slot-cell.booked { background-color: var(--status-busy-bg); color: var(--status-busy-text); cursor: not-allowed; font-size: 0.68rem; font-weight: 600; line-height: 1.15; }
+    .slot-cell.blocked { background-color: var(--status-maint-bg); color: var(--status-maint-text); cursor: not-allowed; font-size: 0.68rem; font-weight: 600; }
+
+    /* ==========================================================================
+       11. MY BOOKINGS
+       ========================================================================== */
+    .my-bookings-container { max-width: 960px; margin: 0 auto; }
+    .section-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+    .section-header-text h2 { font-size: 1.5rem; }
+    .section-header-text p { font-size: 0.83rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .my-bookings-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.2rem; margin-bottom: 0.85rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 0.85rem; transition: border-color var(--transition-fast); }
+    @media (min-width: 768px) { .my-bookings-card { flex-direction: row; align-items: center; justify-content: space-between; } }
+    .my-bookings-card:hover { border-color: var(--primary); }
+    .booking-ref-chip { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; background: var(--primary-light); color: var(--primary-dark); padding: 0.18rem 0.5rem; border-radius: var(--radius-sm); }
+    body.dark-mode .booking-ref-chip { background: rgba(2,132,199,0.25); color: #38bdf8; }
+    .booking-time-info { display: flex; align-items: center; gap: 0.45rem; font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .booking-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+
+    /* ==========================================================================
+       12. ADMIN DASHBOARD
+       ========================================================================== */
+    .admin-dashboard { display: flex; flex-direction: column; gap: 1.75rem; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.1rem; }
+    .kpi-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.15rem; box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 1rem; }
+    .kpi-icon { width: 46px; height: 46px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .kpi-icon.primary { background: var(--primary-light); color: var(--primary); }
+    .kpi-icon.accent  { background: var(--accent-light);  color: var(--accent);  }
+    .kpi-icon.success { background: var(--status-avail-bg); color: var(--status-avail); }
+    .kpi-icon.purple  { background: var(--status-maint-bg); color: var(--status-maint); }
+    .kpi-details h4 { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .kpi-number { font-family: var(--font-display); font-size: 1.7rem; font-weight: 800; color: var(--text-main); line-height: 1.1; }
+    .admin-charts-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.35rem; }
+    .chart-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.4rem; box-shadow: var(--shadow-sm); }
+    .chart-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .chart-card-header h3 { font-size: 1rem; }
+    .chart-card-header span { font-size: 0.73rem; color: var(--text-muted); }
+    .canvas-container { width: 100%; height: 215px; position: relative; }
+    canvas.stat-canvas { width: 100%; height: 100%; display: block; }
+    .admin-table-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.4rem; box-shadow: var(--shadow-sm); }
+    .table-card-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
+    .table-card-header h3 { font-size: 1rem; }
+    .table-responsive { overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    .data-table th, .data-table td { padding: 0.7rem 0.9rem; text-align: left; border-bottom: 1px solid var(--border-subtle); }
+    .data-table th { background: var(--bg-surface); color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.04em; }
+    .data-table tr:hover { background: var(--bg-surface); }
+
+    /* ==========================================================================
+       13. MODALS
+       ========================================================================== */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; animation: fadeIn 0.2s ease-out; }
+    .modal-overlay.active { display: flex; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .modal-box { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-xl); animation: modalSlideUp 0.3s cubic-bezier(0.16,1,0.3,1); }
+    @keyframes modalSlideUp { from{opacity:0;transform:translateY(20px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+    .modal-header { padding: 1.15rem 1.4rem; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--bg-card); z-index: 10; }
+    .modal-header h3 { font-size: 1.1rem; color: var(--text-main); }
+    .modal-close-btn { width: 30px; height: 30px; border-radius: 50%; background: var(--bg-surface); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .modal-close-btn:hover { background: var(--status-busy-bg); color: var(--status-busy); }
+    .modal-body { padding: 1.4rem; }
+    .modal-footer { padding: 1.1rem 1.4rem; border-top: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: flex-end; gap: 0.65rem; background: var(--bg-surface); border-bottom-left-radius: var(--radius-xl); border-bottom-right-radius: var(--radius-xl); }
+    .booking-room-summary { background: var(--bg-surface); padding: 0.8rem; border-radius: var(--radius-md); margin-bottom: 1.1rem; font-size: 0.83rem; }
+    .booking-room-summary-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem; }
+    .conflict-alert { display: none; background: var(--status-busy-bg); border: 1px solid var(--status-busy-border); border-radius: var(--radius-md); padding: 0.8rem 0.9rem; margin-bottom: 1rem; font-size: 0.8rem; color: var(--status-busy-text); animation: shake 0.4s ease-in-out; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-4px)} 40%,80%{transform:translateX(4px)} }
+    .qr-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.25rem; background: #fff; border: 2px dashed var(--border-subtle); border-radius: var(--radius-lg); margin: 0.9rem 0; }
+    canvas#qr-canvas { width: 175px; height: 175px; margin-bottom: 0.65rem; }
+    .scan-box { width: 195px; height: 195px; margin: 0.85rem auto; border: 2px solid var(--primary); border-radius: var(--radius-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(2,132,199,0.05); position: relative; overflow: hidden; }
+    .scan-line { position: absolute; width: 100%; height: 2px; background: var(--primary); animation: scanLine 2s infinite ease-in-out; box-shadow: 0 0 10px var(--primary); }
+    @keyframes scanLine { 0%{top:0%} 50%{top:95%} 100%{top:0%} }
+
+    /* ==========================================================================
+       14. TOAST & FOOTER
+       ========================================================================== */
+    #toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 3000; display: flex; flex-direction: column; gap: 0.4rem; pointer-events: none; }
+    .toast-msg { pointer-events: auto; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-subtle); border-left: 4px solid var(--primary); padding: 0.8rem 1.1rem; border-radius: var(--radius-md); box-shadow: var(--shadow-xl); font-size: 0.855rem; font-weight: 500; display: flex; align-items: center; gap: 0.7rem; min-width: 290px; max-width: 400px; animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1); transition: opacity 0.3s ease, transform 0.3s ease; }
+    .toast-msg.success { border-left-color: var(--status-avail); }
+    .toast-msg.error   { border-left-color: var(--status-busy);  }
+    .toast-msg.warning { border-left-color: var(--status-soon);  }
+    @keyframes toastIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+
+    .app-footer { border-top: 1px solid var(--border-subtle); background: var(--bg-card); padding: 1.25rem; margin-top: auto; font-size: 0.78rem; color: var(--text-muted); }
+    .footer-inner { max-width: 1360px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 0.65rem; flex-wrap: wrap; text-align: center; }
+    .footer-logo-img { width: 22px; height: 22px; object-fit: contain; }
+    .app-footer strong { color: var(--primary); }
+
+    /* ==========================================================================
+       15. PRINT STYLES
+       ========================================================================== */
+    .print-header { display: none; }
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      .header-nav, .hero-section, .filter-panel, .results-header, .btn, .modal-overlay, #reminder-banner, #toast-container, .nav-tabs, .role-badge-toggle, .icon-btn, .app-footer { display: none !important; }
+      .app-main { padding: 0 !important; max-width: 100% !important; }
+      .print-header { display: block !important; text-align: center; margin-bottom: 2rem; border-bottom: 2px solid #000; padding-bottom: 1rem; }
+      .room-grid, .admin-dashboard { display: none !important; }
+      .timetable-view { border: none !important; box-shadow: none !important; padding: 0 !important; }
+      .timetable-matrix th, .timetable-matrix td { border: 1px solid #333 !important; color: #000 !important; background: transparent !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== REMINDER BANNER ==================== -->
+  <aside id="reminder-banner" role="alert" aria-live="polite">
+    <div class="reminder-content">
+      <div class="reminder-text">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span id="reminder-message"><strong>Upcoming Booking:</strong> Your study room starts soon!</span>
+      </div>
+      <div style="display:flex;gap:.45rem;align-items:center;">
+        <button id="reminder-checkin-btn" class="btn btn-sm" style="background:white;color:#b45309;border:1px solid white;">Check In Now</button>
+        <button id="reminder-dismiss-btn" class="btn btn-sm btn-ghost" style="color:white;" aria-label="Dismiss reminder">✕</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==================== NAVBAR ==================== -->
+  <header class="header-nav">
+    <div class="nav-container">
+      <a href="#" class="brand-logo" onclick="switchMainTab('rooms'); return false;" aria-label="NUST Space Finder Home">
+        <div class="brand-emblem-wrap">
+          <img src="assets/logo-mark.png" alt="NUST Space Finder Logo" class="brand-logo-img" width="34" height="34">
+        </div>
+        <div class="brand-title">
+          <span class="brand-name">NUST <span>Space Finder</span></span>
+          <span class="brand-sub">Classroom &amp; Lab Booking</span>
+        </div>
+      </a>
+
+      <nav class="nav-tabs" aria-label="Primary Navigation">
+        <button class="nav-tab-btn active" id="tab-nav-rooms" onclick="switchMainTab('rooms')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          Rooms
+        </button>
+        <button class="nav-tab-btn" id="tab-nav-timetable" onclick="switchMainTab('timetable')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Timetable
+        </button>
+        <button class="nav-tab-btn" id="tab-nav-bookings" onclick="switchMainTab('bookings')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+          My Bookings <span class="tab-counter" id="my-bookings-count">0</span>
+        </button>
+        <button class="nav-tab-btn" id="tab-nav-admin" onclick="switchMainTab('admin')" style="display:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          Admin
+        </button>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="time-badge" id="live-campus-clock" title="NUST Campus Time (CAT, GMT+2)">
+          <span class="pulse-dot avail"></span>
+          <span id="clock-time-display">--:--:--</span>
+        </div>
+        <div class="role-badge-toggle" title="Switch User Role">
+          <button class="role-btn active" id="role-btn-student" onclick="setUserRole('student')">Student</button>
+          <button class="role-btn" id="role-btn-admin" onclick="setUserRole('admin')">Admin</button>
+        </div>
+        <div class="user-pill" id="active-user-pill">
+          <div class="user-avatar" id="user-avatar-initial">S</div>
+          <span id="active-user-id" style="font-family:var(--font-mono);font-size:.75rem;">N02314589B</span>
+        </div>
+        <button class="icon-btn" id="theme-toggle-btn" onclick="toggleDarkMode()" aria-label="Toggle Dark Mode" title="Toggle Dark/Light Mode">
+          <span id="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section class="hero-section" id="hero-section">
+    <div class="hero-container">
+      <div class="hero-tag">
+        <span class="pulse-dot avail"></span>
+        National University of Science and Technology · Bulawayo
+      </div>
+      <h1 class="hero-title">Find &amp; book campus spaces. <span class="highlight">In seconds.</span></h1>
+      <p class="hero-desc">Real-time availability for classrooms, computer labs, and library study pods across all NUST faculties — clash-free, every time.</p>
+
+      <!-- Live Stats -->
+      <div class="campus-stats-bar" aria-label="Campus Availability Stats">
+        <div class="stat-pill"><span class="pulse-dot avail"></span><span>Available:</span><span class="num" id="stat-avail-count" style="color:var(--status-avail);">--</span></div>
+        <div class="stat-pill"><span class="pulse-dot soon"></span><span>Booked Soon:</span><span class="num" id="stat-soon-count" style="color:var(--status-soon);">--</span></div>
+        <div class="stat-pill"><span class="pulse-dot busy"></span><span>Occupied:</span><span class="num" id="stat-busy-count" style="color:var(--status-busy);">--</span></div>
+        <div class="stat-pill"><span>Total:</span><span class="num" id="stat-total-count">16</span></div>
+      </div>
+
+      <!-- Unified Search Bar -->
+      <div class="search-bar">
+        <svg class="search-bar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="hero-search-input" placeholder="Search by room name, code (e.g. LT1, CIS-Lab1), or building…" oninput="handleSearchInput(this.value)" aria-label="Search rooms">
+        <div class="search-bar-divider"></div>
+        <select id="hero-type-select" onchange="handleTypeFilter(this.value)" aria-label="Filter by Room Type">
+          <option value="all">All Types</option>
+          <option value="Study Room">Study Room</option>
+          <option value="Classroom">Classroom</option>
+          <option value="Computer Lab">Computer Lab</option>
+          <option value="Lecture Theatre">Lecture Theatre</option>
+          <option value="Studio">Studio</option>
+        </select>
+        <button class="btn btn-accent" id="btn-find-now" onclick="triggerFindMeARoomNow()" title="Find the nearest free room right now" style="border-radius:var(--radius-lg);white-space:nowrap;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          Find Me a Room
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Print Header -->
+  <div class="print-header">
+    <img src="assets/logo-transparent.png" alt="NUST Space Finder Logo" style="height: 64px; object-fit: contain; margin-bottom: 0.5rem;">
+    <h2>NATIONAL UNIVERSITY OF SCIENCE AND TECHNOLOGY (NUST)</h2>
+    <p>Campus Room Timetable Schedule · Bulawayo, Zimbabwe</p>
+    <p id="print-timestamp" style="font-size:.82rem;color:#555;margin-top:.5rem;"></p>
+  </div>
+
+  <!-- ==================== MAIN WORKSPACE ==================== -->
+  <main class="app-main">
+
+    <!-- ==================== VIEW 1: ROOMS CATALOG ==================== -->
+    <section id="view-rooms" class="view-panel">
+      <!-- Filter Panel (collapsible) -->
+      <div class="filter-panel" id="filter-panel">
+        <div class="filter-panel-header" onclick="toggleFilterPanel()" id="filter-panel-header">
+          <div class="filter-header-left">
+            <span class="filter-toggle-label">Building:</span>
+            <div class="building-chips" id="building-filter-chips" aria-label="Filter by NUST Campus Building">
+              <button class="filter-chip active" data-building="all" onclick="setBuildingFilter('all', this); event.stopPropagation();">All</button>
+              <button class="filter-chip" data-building="Commerce Complex" onclick="setBuildingFilter('Commerce Complex', this); event.stopPropagation();">Commerce</button>
+              <button class="filter-chip" data-building="Applied Sciences Complex" onclick="setBuildingFilter('Applied Sciences Complex', this); event.stopPropagation();">Applied Science</button>
+              <button class="filter-chip" data-building="Information Resource Centre (Library)" onclick="setBuildingFilter('Information Resource Centre (Library)', this); event.stopPropagation();">Library</button>
+              <button class="filter-chip" data-building="CIS Block (Informatics)" onclick="setBuildingFilter('CIS Block (Informatics)', this); event.stopPropagation();">CIS / CS Labs</button>
+              <button class="filter-chip" data-building="Industrial Technology (FIT)" onclick="setBuildingFilter('Industrial Technology (FIT)', this); event.stopPropagation();">FIT Tech</button>
+              <button class="filter-chip" data-building="Faculty of Built Environment" onclick="setBuildingFilter('Faculty of Built Environment', this); event.stopPropagation();">Built Env</button>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;">
+            <span style="font-size:.73rem;color:var(--text-subtle);">More filters</span>
+            <svg class="filter-chevron" id="filter-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+        </div>
+
+        <div class="filter-panel-body" id="filter-panel-body">
+          <div class="filter-body-grid">
+            <div class="filter-body-group">
+              <label for="filter-capacity-slider">Min Capacity:</label>
+              <input type="range" class="capacity-slider" id="filter-capacity-slider" min="1" max="150" value="1" oninput="handleCapacitySlider(this.value)">
+              <span class="slider-val" id="capacity-slider-val">1+</span>
+            </div>
+            <div class="filter-body-group">
+              <label for="filter-status-select">Status:</label>
+              <select class="styled-select" id="filter-status-select" onchange="handleStatusFilter(this.value)">
+                <option value="all">All Statuses</option>
+                <option value="available">🟢 Available Now</option>
+                <option value="soon">🟡 Booked Soon</option>
+                <option value="occupied">🔴 Occupied</option>
+              </select>
+            </div>
+            <div class="filter-body-group">
+              <label for="sort-rooms-select">Sort:</label>
+              <select class="styled-select" id="sort-rooms-select" onchange="handleSortChange(this.value)">
+                <option value="default">Default</option>
+                <option value="capacity-asc">Capacity ↑</option>
+                <option value="capacity-desc">Capacity ↓</option>
+                <option value="name-asc">Name A–Z</option>
+              </select>
+            </div>
+          </div>
+          <div class="amenities-row">
+            <span class="amenity-tag-label">Amenities:</span>
+            <label class="checkbox-label"><input type="checkbox" value="Projector" onchange="toggleAmenityFilter('Projector')"> Projector</label>
+            <label class="checkbox-label"><input type="checkbox" value="PCs" onchange="toggleAmenityFilter('PCs')"> Desktop PCs</label>
+            <label class="checkbox-label"><input type="checkbox" value="Whiteboard" onchange="toggleAmenityFilter('Whiteboard')"> Whiteboard</label>
+            <label class="checkbox-label"><input type="checkbox" value="Wi-Fi" onchange="toggleAmenityFilter('Wi-Fi')"> Wi-Fi</label>
+            <label class="checkbox-label"><input type="checkbox" value="Air Conditioning" onchange="toggleAmenityFilter('Air Conditioning')"> A/C</label>
+            <label class="checkbox-label"><input type="checkbox" value="Power Outlets" onchange="toggleAmenityFilter('Power Outlets')"> Power Outlets</label>
+            <span style="width:1px;height:18px;background:var(--border-subtle);margin:0 .15rem;"></span>
+            <label class="checkbox-label" style="color:#ef4444;font-weight:700;">
+              <input type="checkbox" id="filter-favs-only" onchange="toggleFavsOnly(this.checked)"> ❤️ Favourites
+            </label>
+            <button class="btn btn-sm btn-ghost" onclick="resetAllFilters()" style="margin-left:auto;">Reset Filters</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Header -->
+      <div class="results-header">
+        <div class="results-count">Showing <strong id="displayed-rooms-count">0</strong> rooms</div>
+        <button class="btn btn-sm btn-outline" onclick="forceRefreshStatuses()" title="Refresh room availability">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          Refresh
+        </button>
+      </div>
+
+      <div class="room-grid" id="room-grid-container" aria-live="polite"></div>
+    </section>
+
+    <!-- ==================== VIEW 2: TIMETABLE ==================== -->
+    <section id="view-timetable" class="view-panel" style="display:none;">
+      <div class="timetable-view">
+        <div class="timetable-controls">
+          <div class="timetable-title">
+            <h2 style="font-size:1.1rem;">Campus Room Timetable</h2>
+            <p>Click any green slot (07:00–21:00) to book that room instantly.</p>
+          </div>
+          <div class="timetable-date-nav">
+            <label for="timetable-date-picker" style="font-size:.8rem;font-weight:600;color:var(--text-muted);">Date:</label>
+            <input type="date" id="timetable-date-picker" class="form-control" style="width:auto;" onchange="handleTimetableDateChange(this.value)">
+            <button class="btn btn-sm btn-outline" onclick="setTimetableToday()">Today</button>
+            <button class="btn btn-sm btn-outline" onclick="setTimetableTomorrow()">Tomorrow</button>
+            <button class="btn btn-sm btn-primary" onclick="exportPrintableTimetable()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Print / Export
+            </button>
+          </div>
+        </div>
+        <div class="timetable-matrix-container">
+          <table class="timetable-matrix" id="timetable-matrix-table"></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: MY BOOKINGS ==================== -->
+    <section id="view-bookings" class="view-panel" style="display:none;">
+      <div class="my-bookings-container">
+        <div class="section-header">
+          <div class="section-header-text">
+            <h2>My Bookings</h2>
+            <p>Manage reservations, reschedule, or generate your QR check-in code.</p>
+          </div>
+          <div style="display:flex;gap:.45rem;flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" onclick="exportPrintableTimetable()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Print Timetable
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="switchMainTab('rooms')">+ Book a Room</button>
+          </div>
+        </div>
+        <div id="my-bookings-list" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 4: ADMIN DASHBOARD ==================== -->
+    <section id="view-admin" class="view-panel" style="display:none;">
+      <div class="admin-dashboard">
+        <div class="section-header">
+          <div class="section-header-text">
+            <h2>Campus Administration</h2>
+            <p>Manage room allocations, block spaces for exams or maintenance, and review utilisation.</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddRoomModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add Room
+          </button>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-icon primary">🏛️</div><div class="kpi-details"><h4>Total Rooms</h4><div class="kpi-number" id="admin-kpi-rooms">16</div></div></div>
+          <div class="kpi-card"><div class="kpi-icon success">📅</div><div class="kpi-details"><h4>Total Bookings</h4><div class="kpi-number" id="admin-kpi-bookings">0</div></div></div>
+          <div class="kpi-card"><div class="kpi-icon accent">⚡</div><div class="kpi-details"><h4>Current Occupancy</h4><div class="kpi-number" id="admin-kpi-occupancy">0%</div></div></div>
+          <div class="kpi-card"><div class="kpi-icon purple">🔧</div><div class="kpi-details"><h4>Under Maintenance</h4><div class="kpi-number" id="admin-kpi-maint">0</div></div></div>
+        </div>
+
+        <div class="admin-charts-row">
+          <div class="chart-card">
+            <div class="chart-card-header"><h3>Top 5 Most Booked Rooms</h3><span>All-time usage</span></div>
+            <div class="canvas-container"><canvas id="chart-popular-rooms" class="stat-canvas"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><h3>Peak Booking Hours</h3><span>07:00 – 21:00 distribution</span></div>
+            <div class="canvas-container"><canvas id="chart-peak-hours" class="stat-canvas"></canvas></div>
+          </div>
+        </div>
+
+        <div class="admin-table-card">
+          <div class="table-card-header">
+            <h3>Rooms Directory</h3>
+            <input type="text" id="admin-filter-rooms-input" placeholder="Filter rooms…" class="form-control" style="max-width:240px;" oninput="filterAdminRoomsTable(this.value)" aria-label="Filter rooms by code, name, or building">
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="admin-rooms-table">
+              <thead><tr><th>Code</th><th>Room Name</th><th>Building</th><th>Type</th><th>Capacity</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="admin-rooms-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="admin-table-card">
+          <div class="table-card-header">
+            <h3>All Bookings &amp; Reservations</h3>
+            <input type="text" id="admin-filter-bookings-input" placeholder="Search by student ID or ref…" class="form-control" style="max-width:240px;" oninput="filterAdminBookingsTable(this.value)" aria-label="Search bookings by student ID, reference, or purpose">
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="admin-bookings-table">
+              <thead><tr><th>Ref #</th><th>Student ID</th><th>Room</th><th>Date &amp; Time</th><th>Purpose</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="admin-bookings-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <img src="assets/logo-mark.png" alt="NUST Space Finder" class="footer-logo-img" width="22" height="22">
+      <p><strong>NUST Space Finder</strong> · National University of Science and Technology, Bulawayo, Zimbabwe. Data stored locally in your browser.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. BOOKING MODAL -->
+  <div class="modal-overlay" id="modal-booking">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-booking-title">
+      <div class="modal-header">
+        <h3 id="modal-booking-title">Book a Space</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-booking')" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="booking-room-summary" id="booking-room-summary"></div>
+        <div class="conflict-alert" id="booking-conflict-alert" role="alert">
+          <strong>⚠️ Booking Conflict:</strong> <span id="booking-conflict-details">This slot is already reserved.</span>
+        </div>
+        <form id="booking-form" onsubmit="handleBookingFormSubmit(event)">
+          <input type="hidden" id="booking-room-id">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label" for="booking-date">Date</label><input type="date" id="booking-date" class="form-control" required onchange="validateBookingOverlap()"></div>
+            <div class="form-group"><label class="form-label" for="booking-start-time">Start Time</label><select id="booking-start-time" class="form-control" required onchange="validateBookingOverlap()"></select></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label" for="booking-duration">Duration</label>
+              <select id="booking-duration" class="form-control" required onchange="validateBookingOverlap()">
+                <option value="1">1 Hour</option><option value="2">2 Hours</option><option value="3">3 Hours</option><option value="4">4 Hours</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label" for="booking-group-size">Group Size</label>
+              <input type="number" id="booking-group-size" class="form-control" min="1" max="200" value="2" required oninput="validateCapacityAgainstRoom()">
+              <small id="capacity-warning" style="color:var(--status-busy);font-size:.73rem;display:none;">Exceeds room capacity!</small>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label" for="booking-purpose">Purpose</label>
+            <select id="booking-purpose" class="form-control" required>
+              <option value="Individual Quiet Study">Individual Quiet Study</option>
+              <option value="Group Discussion &amp; Revision">Group Discussion &amp; Revision</option>
+              <option value="Final Year Project (CapStone)">Final Year Project (CapStone)</option>
+              <option value="Society / Club Meeting">Society / Club Meeting</option>
+              <option value="Tutorial Session">Tutorial Session</option>
+              <option value="Coding &amp; Software Lab Work">Coding &amp; Software Lab Work</option>
+              <option value="Exam Preparation">Exam Preparation</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label" for="booking-student-id">Student ID</label><input type="text" id="booking-student-id" class="form-control" required readonly style="opacity:.8;"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-booking')">Cancel</button>
+        <button class="btn btn-accent" id="btn-confirm-booking" onclick="document.getElementById('booking-form').requestSubmit()">Confirm Reservation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. CONFIRMATION & QR MODAL -->
+  <div class="modal-overlay" id="modal-confirmation">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+      <div class="modal-header">
+        <div style="display:flex;align-items:center;gap:.65rem;">
+          <img src="assets/logo-mark.png" alt="NUST Space Finder" style="width:28px;height:28px;object-fit:contain;">
+          <h3 id="confirm-modal-title" style="margin:0;">Booking Confirmed!</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('modal-confirmation')" aria-label="Close confirmation modal">✕</button>
+      </div>
+      <div class="modal-body" style="text-align:center;">
+        <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:.35rem;">Your reservation reference:</p>
+        <div id="confirm-ref-display" style="font-size:1.45rem;font-weight:800;font-family:var(--font-mono);color:var(--primary);letter-spacing:.06em;margin-bottom:.9rem;">NUST-BK-XXXX</div>
+        <div id="confirm-details-box" style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:.9rem;text-align:left;font-size:.83rem;margin-bottom:.9rem;"></div>
+        <div class="qr-container">
+          <canvas id="qr-canvas" width="175" height="175" aria-label="QR Code for Check-in"></canvas>
+          <p style="font-size:.72rem;color:var(--text-muted);">Scan at the room door upon arrival.</p>
+        </div>
+        <div style="background:var(--status-soon-bg);border:1px solid var(--status-soon-border);color:var(--status-soon-text);border-radius:var(--radius-md);padding:.7rem .85rem;font-size:.78rem;text-align:left;margin-top:.5rem;">
+          ⏱️ <strong>Auto-Release Policy:</strong> If no check-in within <strong>10 minutes</strong> of the start time, the booking is automatically released.
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content:space-between;">
+        <button class="btn btn-outline" id="btn-download-ics" onclick="downloadIcsCalendar()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Add to Calendar
+        </button>
+        <button class="btn btn-primary" onclick="closeModal('modal-confirmation'); switchMainTab('bookings');">View My Bookings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. CHECK-IN MODAL -->
+  <div class="modal-overlay" id="modal-checkin">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="checkin-modal-title">
+      <div class="modal-header">
+        <h3 id="checkin-modal-title">Room Check-In</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-checkin')" aria-label="Close check-in modal">✕</button>
+      </div>
+      <div class="modal-body" style="text-align:center;">
+        <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:.5rem;">Simulating QR scan at door reader:</p>
+        <div class="scan-box">
+          <div class="scan-line"></div>
+          <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span style="font-size:.73rem;color:var(--primary);font-weight:600;margin-top:.45rem;" id="checkin-scan-status">Scanning Room Beacon…</span>
+        </div>
+        <div id="checkin-target-info" style="font-size:.83rem;background:var(--bg-surface);padding:.7rem;border-radius:var(--radius-md);margin-top:.75rem;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-checkin')">Cancel</button>
+        <button class="btn btn-primary" id="btn-confirm-checkin-action" onclick="performCheckInAction()">Confirm Check-In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. RESCHEDULE MODAL -->
+  <div class="modal-overlay" id="modal-reschedule">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="reschedule-modal-title">
+      <div class="modal-header">
+        <h3 id="reschedule-modal-title">Reschedule Booking</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-reschedule')" aria-label="Close reschedule modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="reschedule-summary" style="background:var(--bg-surface);padding:.7rem;border-radius:var(--radius-md);font-size:.83rem;margin-bottom:.9rem;"></div>
+        <div class="conflict-alert" id="reschedule-conflict-alert" role="alert">
+          <strong>⚠️ Clash:</strong> <span id="reschedule-conflict-details">This room is occupied during that time.</span>
+        </div>
+        <input type="hidden" id="reschedule-booking-id">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="reschedule-date">New Date</label><input type="date" id="reschedule-date" class="form-control" required onchange="validateRescheduleOverlap()"></div>
+          <div class="form-group"><label class="form-label" for="reschedule-start-time">New Start Time</label><select id="reschedule-start-time" class="form-control" required onchange="validateRescheduleOverlap()"></select></div>
+        </div>
+        <div class="form-group"><label class="form-label" for="reschedule-duration">Duration</label>
+          <select id="reschedule-duration" class="form-control" required onchange="validateRescheduleOverlap()">
+            <option value="1">1 Hour</option><option value="2">2 Hours</option><option value="3">3 Hours</option><option value="4">4 Hours</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-reschedule')">Cancel</button>
+        <button class="btn btn-primary" id="btn-save-reschedule" onclick="saveRescheduledBooking()">Update Reservation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ADMIN ADD/EDIT ROOM MODAL -->
+  <div class="modal-overlay" id="modal-admin-room">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="admin-room-modal-title">
+      <div class="modal-header">
+        <h3 id="admin-room-modal-title">Add Campus Room</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-admin-room')" aria-label="Close admin room modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="admin-room-form" onsubmit="handleAdminRoomFormSubmit(event)">
+          <input type="hidden" id="admin-room-edit-id">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label" for="admin-room-code">Room Code</label><input type="text" id="admin-room-code" class="form-control" required placeholder="e.g. COMM-LT1"></div>
+            <div class="form-group"><label class="form-label" for="admin-room-name">Display Name</label><input type="text" id="admin-room-name" class="form-control" required placeholder="Commerce Lecture Theatre 1"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label" for="admin-room-building">Building</label>
+              <select id="admin-room-building" class="form-control" required>
+                <option value="Commerce Complex">Commerce Complex</option>
+                <option value="Applied Sciences Complex">Applied Sciences Complex</option>
+                <option value="Information Resource Centre (Library)">Library (IRC)</option>
+                <option value="CIS Block (Informatics)">CIS Block (Informatics)</option>
+                <option value="Industrial Technology (FIT)">Industrial Technology (FIT)</option>
+                <option value="Faculty of Built Environment">Faculty of Built Environment</option>
+                <option value="Technology Centre">Technology Centre</option>
+                <option value="Administration Complex">Administration Complex</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label" for="admin-room-type">Room Type</label>
+              <select id="admin-room-type" class="form-control" required>
+                <option value="Study Room">Study Room</option>
+                <option value="Classroom">Classroom</option>
+                <option value="Computer Lab">Computer Lab</option>
+                <option value="Lecture Theatre">Lecture Theatre</option>
+                <option value="Studio">Studio</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label" for="admin-room-capacity">Capacity</label><input type="number" id="admin-room-capacity" class="form-control" min="1" max="500" value="30" required></div>
+            <div class="form-group"><label class="form-label" for="admin-room-floor">Floor / Location</label><input type="text" id="admin-room-floor" class="form-control" placeholder="Ground Floor, Room 102" required></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Amenities</label>
+            <div class="amenities-row" id="admin-amenities-group" style="padding-top:.35rem;">
+              <label class="checkbox-label"><input type="checkbox" value="Projector"> Projector</label>
+              <label class="checkbox-label"><input type="checkbox" value="PCs"> Desktop PCs</label>
+              <label class="checkbox-label"><input type="checkbox" value="Whiteboard"> Whiteboard</label>
+              <label class="checkbox-label"><input type="checkbox" value="Wi-Fi"> Wi-Fi</label>
+              <label class="checkbox-label"><input type="checkbox" value="Air Conditioning"> A/C</label>
+              <label class="checkbox-label"><input type="checkbox" value="Power Outlets"> Power Outlets</label>
+            </div>
+          </div>
+          <div class="form-group" style="padding-top:.5rem;border-top:1px solid var(--border-subtle);">
+            <label class="checkbox-label" style="font-weight:700;color:var(--status-maint);">
+              <input type="checkbox" id="admin-room-is-blocked" onchange="toggleAdminBlockReason(this.checked)">
+              Block for Maintenance / Departmental Exam
+            </label>
+            <div id="admin-block-reason-box" style="display:none;margin-top:.5rem;">
+              <input type="text" id="admin-room-block-reason" class="form-control" placeholder="Reason (e.g. A/C repair, Midterm exams)" aria-label="Maintenance or block reason">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-admin-room')">Cancel</button>
+        <button class="btn btn-primary" onclick="document.getElementById('admin-room-form').requestSubmit()">Save Room</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" aria-live="assertive"></div>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    /* =========================================================
+       DATA
+       ========================================================= */
+    const DEFAULT_ROOMS = [
+      { id:"room-comm-lt1",      code:"COMM-LT1",       name:"Lecture Theatre 1 (LT1)",           building:"Commerce Complex",                    type:"Lecture Theatre", capacity:150, floor:"Ground Floor",          amenities:["Projector","Wi-Fi","Air Conditioning","Power Outlets"], isBlocked:false, blockReason:"" },
+      { id:"room-comm-c102",     code:"COMM-C102",      name:"Commerce Seminar Room C102",         building:"Commerce Complex",                    type:"Classroom",       capacity:40,  floor:"1st Floor, Wing A",    amenities:["Whiteboard","Wi-Fi","Projector","Power Outlets"],         isBlocked:false, blockReason:"" },
+      { id:"room-sci-bio3",      code:"SCI-BIO3",       name:"Biochemistry Seminar Room 3",        building:"Applied Sciences Complex",            type:"Study Room",      capacity:25,  floor:"2nd Floor",            amenities:["Whiteboard","Wi-Fi","Power Outlets"],                      isBlocked:false, blockReason:"" },
+      { id:"room-sci-phys-lt",   code:"SCI-PHYS-LT",    name:"Physics Lecture Theatre",            building:"Applied Sciences Complex",            type:"Lecture Theatre", capacity:95,  floor:"Ground Floor",          amenities:["Projector","Wi-Fi","Whiteboard"],                          isBlocked:false, blockReason:"" },
+      { id:"room-lib-carrel-a",  code:"LIB-CARREL-A",   name:"Quiet Study Carrel A-12",            building:"Information Resource Centre (Library)",type:"Study Room",      capacity:4,   floor:"1st Floor, East Wing", amenities:["Power Outlets","Wi-Fi"],                                   isBlocked:false, blockReason:"" },
+      { id:"room-lib-pod-4",     code:"LIB-POD-4",      name:"Collaborative Discussion Pod 4",     building:"Information Resource Centre (Library)",type:"Study Room",      capacity:8,   floor:"2nd Floor",            amenities:["Whiteboard","Wi-Fi","Power Outlets"],                      isBlocked:false, blockReason:"" },
+      { id:"room-lib-pg-suite",  code:"LIB-PG-ROOM",    name:"Postgraduate Research Suite",        building:"Information Resource Centre (Library)",type:"Study Room",      capacity:16,  floor:"3rd Floor",            amenities:["Air Conditioning","Wi-Fi","Power Outlets"],                isBlocked:false, blockReason:"" },
+      { id:"room-cis-lab1",      code:"CIS-LAB1",       name:"Computer Science Lab 1 (Linux)",     building:"CIS Block (Informatics)",             type:"Computer Lab",    capacity:45,  floor:"Ground Floor",          amenities:["PCs","Projector","Wi-Fi","Air Conditioning"],              isBlocked:false, blockReason:"" },
+      { id:"room-cis-se-studio", code:"CIS-SE-STUDIO",  name:"Software Engineering Studio",        building:"CIS Block (Informatics)",             type:"Computer Lab",    capacity:28,  floor:"1st Floor",            amenities:["PCs","Whiteboard","Wi-Fi","Power Outlets"],                isBlocked:false, blockReason:"" },
+      { id:"room-fit-d2",        code:"FIT-D2",         name:"Mechanical Drawing Studio D2",       building:"Industrial Technology (FIT)",         type:"Studio",          capacity:35,  floor:"1st Floor",            amenities:["Projector","Wi-Fi","Whiteboard"],                          isBlocked:false, blockReason:"" },
+      { id:"room-fit-lt",        code:"FIT-ENG-LT",     name:"FIT Engineering Lecture Theatre",    building:"Industrial Technology (FIT)",         type:"Lecture Theatre", capacity:130, floor:"Ground Floor",          amenities:["Projector","Wi-Fi","Air Conditioning"],                    isBlocked:false, blockReason:"" },
+      { id:"room-arch-b1",       code:"ARCH-STUDIO-B1", name:"Architecture Design Studio B1",      building:"Faculty of Built Environment",        type:"Studio",          capacity:30,  floor:"Ground Floor",          amenities:["Whiteboard","Wi-Fi","Power Outlets"],                      isBlocked:false, blockReason:"" },
+      { id:"room-tech-innov",    code:"TECH-INNOV-LAB", name:"CAD/CAM Innovation Lab",             building:"Technology Centre",                  type:"Computer Lab",    capacity:25,  floor:"Ground Floor",          amenities:["PCs","Projector","Wi-Fi","Air Conditioning"],              isBlocked:false, blockReason:"" },
+      { id:"room-admin-senate2", code:"ADMIN-SENATE2",  name:"Senate Committee Room 2",            building:"Administration Complex",              type:"Study Room",      capacity:18,  floor:"2nd Floor",            amenities:["Air Conditioning","Wi-Fi","Power Outlets"],                isBlocked:true,  blockReason:"Scheduled Departmental Accreditation Board" },
+      { id:"room-mph-annex",     code:"MPH-ANNEX",      name:"Multi-Purpose Hall Seminar Annex",   building:"Commerce Complex",                    type:"Classroom",       capacity:65,  floor:"Ground Floor",          amenities:["Projector","Wi-Fi","Whiteboard"],                          isBlocked:false, blockReason:"" },
+      { id:"room-cis-lab2",      code:"CIS-LAB2",       name:"Informatics Multimedia Lab 2",       building:"CIS Block (Informatics)",             type:"Computer Lab",    capacity:38,  floor:"Ground Floor",          amenities:["PCs","Projector","Wi-Fi","Air Conditioning"],              isBlocked:false, blockReason:"" }
+    ];
+
+    function getTodayDateString(offset = 0) {
+      const d = new Date(); if (offset) d.setDate(d.getDate() + offset);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+    function getHourSlot(h) { return `${String(h).padStart(2,'0')}:00`; }
+
+    function generateStarterBookings() {
+      const today = getTodayDateString(0), tomorrow = getTodayDateString(1);
+      const cur = new Date().getHours();
+      const active = Math.min(Math.max(cur, 8), 19);
+      const next   = Math.min(active + 1, 20);
+      return [
+        { id:"bk-init-1", reference:"NUST-BK-7491", roomId:"room-comm-lt1",   studentId:"N02314589B", date:today,    startTime:getHourSlot(active), duration:2, endTime:getHourSlot(active+2), groupSize:45, purpose:"Group Discussion & Revision",      status:"Checked In",  checkedInAt:new Date().toISOString(), createdAt:new Date().toISOString() },
+        { id:"bk-init-2", reference:"NUST-BK-8104", roomId:"room-cis-lab1",   studentId:"N02241928K", date:today,    startTime:getHourSlot(next),   duration:1, endTime:getHourSlot(next+1),   groupSize:20, purpose:"Coding & Software Lab Work",       status:"Confirmed",   checkedInAt:null,                     createdAt:new Date().toISOString() },
+        { id:"bk-init-3", reference:"NUST-BK-3392", roomId:"room-lib-pod-4",  studentId:"N02314589B", date:today,    startTime:getHourSlot(Math.min(cur+2,19)), duration:1, endTime:getHourSlot(Math.min(cur+3,20)), groupSize:4, purpose:"Final Year Project (CapStone)", status:"Confirmed", checkedInAt:null, createdAt:new Date().toISOString() },
+        { id:"bk-init-4", reference:"NUST-BK-5190", roomId:"room-sci-bio3",   studentId:"N02198471X", date:tomorrow, startTime:"10:00",              duration:2, endTime:"12:00",               groupSize:15, purpose:"Tutorial Session",                 status:"Confirmed",   checkedInAt:null,                     createdAt:new Date().toISOString() },
+        { id:"bk-init-5", reference:"NUST-BK-9022", roomId:"room-tech-innov", studentId:"N02388410M", date:tomorrow, startTime:"14:00",              duration:3, endTime:"17:00",               groupSize:22, purpose:"Coding & Software Lab Work",       status:"Confirmed",   checkedInAt:null,                     createdAt:new Date().toISOString() }
+      ];
+    }
+
+    /* =========================================================
+       STATE
+       ========================================================= */
+    const SK = { ROOMS:"nust_rooms_v1", BOOKINGS:"nust_bookings_v1", FAVORITES:"nust_favs_v1", ROLE:"nust_user_role_v1", STUDENT:"nust_student_id_v1", THEME:"nust_theme_v1" };
+
+    const App = {
+      rooms:[], bookings:[], favorites:new Set(),
+      role:"student", studentId:"N02314589B", tab:"rooms",
+      filters:{ q:"", building:"all", type:"all", cap:1, status:"all", amenities:new Set(), favs:false, sort:"default" },
+      timetableDate: getTodayDateString(0),
+      bookingRoom:null, checkinBooking:null, rescheduleBooking:null
+    };
+
+    function initApp() {
+      try { const s = localStorage.getItem(SK.ROOMS);    App.rooms    = s ? JSON.parse(s) : DEFAULT_ROOMS;              } catch { App.rooms    = DEFAULT_ROOMS;              }
+      try { const s = localStorage.getItem(SK.BOOKINGS); App.bookings = s ? JSON.parse(s) : generateStarterBookings(); } catch { App.bookings = generateStarterBookings(); }
+      try { const s = localStorage.getItem(SK.FAVORITES);App.favorites= new Set(s ? JSON.parse(s) : ["room-lib-pod-4","room-cis-lab1"]); } catch { App.favorites = new Set(); }
+      try { App.role      = localStorage.getItem(SK.ROLE)    || "student";    } catch { App.role = "student"; }
+      try { App.studentId = localStorage.getItem(SK.STUDENT) || "N02314589B"; } catch { App.studentId = "N02314589B"; }
+      try {
+        if (localStorage.getItem(SK.THEME) === "dark") {
+          document.body.classList.add("dark-mode");
+          const ti = document.getElementById("theme-icon");
+          if (ti) ti.textContent = "☀️";
+        }
+      } catch {}
+      setUserRole(App.role);
+      save();
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(SK.ROOMS,    JSON.stringify(App.rooms));
+        localStorage.setItem(SK.BOOKINGS, JSON.stringify(App.bookings));
+        localStorage.setItem(SK.FAVORITES,JSON.stringify([...App.favorites]));
+      } catch (err) {
+        console.warn("Could not save to localStorage:", err);
+      }
+    }
+
+    /* =========================================================
+       TIME ENGINE
+       ========================================================= */
+    function parseDT(dateStr, timeStr) {
+      const [y,mo,d] = dateStr.split("-").map(Number);
+      const [h,m]    = timeStr.split(":").map(Number);
+      return new Date(y, mo-1, d, h, m, 0, 0);
+    }
+
+    function evalRoom(room) {
+      if (room.isBlocked) return { status:"maintenance", badgeClass:"badge-maint", label:"Maintenance", subtext: room.blockReason||"Blocked", currentBooking:null, nextBooking:null };
+      const now = new Date(), todayStr = getTodayDateString(0);
+      const bks = App.bookings.filter(b => b.roomId===room.id && b.date===todayStr && b.status!=="Cancelled" && b.status!=="Auto-Released");
+      for (const bk of bks) {
+        const s = parseDT(bk.date, bk.startTime), e = parseDT(bk.date, bk.endTime);
+        if (now >= s && now < e) return { status:"occupied", badgeClass:"badge-busy", label:"Occupied", subtext:`Until ${bk.endTime} (${Math.round((e-now)/60000)}m left)`, currentBooking:bk, nextBooking:null };
+      }
+      let soonBk = null, minMins = Infinity;
+      for (const bk of bks) {
+        const s = parseDT(bk.date, bk.startTime);
+        if (s > now) { const m = Math.round((s-now)/60000); if (m<=60 && m<minMins) { minMins=m; soonBk=bk; } }
+      }
+      if (soonBk) return { status:"soon", badgeClass:"badge-soon", label:"Booked Soon", subtext:`Starts in ${minMins} min (${soonBk.startTime})`, currentBooking:null, nextBooking:soonBk };
+      return { status:"available", badgeClass:"badge-avail", label:"Available Now", subtext:"Free for immediate booking", currentBooking:null, nextBooking:null };
+    }
+
+    function runAutoRelease() {
+      const now = new Date(); let n = 0;
+      App.bookings.forEach(bk => {
+        if (bk.status === "Confirmed") {
+          const elapsed = (now - parseDT(bk.date, bk.startTime)) / 60000;
+          if (elapsed >= 10 && elapsed < 180) { bk.status = "Auto-Released"; n++; showToast(`${getCode(bk.roomId)} booking ${bk.reference} auto-released (no check-in).`, "warning"); }
+        }
+      });
+      if (n > 0) { save(); renderAll(); }
+    }
+
+    function checkReminders() {
+      const banner = document.getElementById("reminder-banner");
+      const msg = document.getElementById("reminder-message");
+      const btn = document.getElementById("reminder-checkin-btn");
+      if (!banner || !msg || !btn) return;
+      if (App.role !== "student") { banner.style.display = "none"; return; }
+      const now = new Date();
+      let upcoming = null, minDiff = Infinity;
+      App.bookings.filter(b => b.studentId===App.studentId && b.status==="Confirmed").forEach(bk => {
+        const diff = (parseDT(bk.date, bk.startTime) - now) / 60000;
+        if (diff >= -10 && diff <= 15 && diff < minDiff) { minDiff = Math.round(diff); upcoming = bk; }
+      });
+      if (upcoming) {
+        const room = App.rooms.find(r => r.id === upcoming.roomId);
+        const roomTitle = room ? room.name : 'Study Room';
+        if (minDiff > 0) {
+          msg.innerHTML = `<strong>Upcoming in ${minDiff}m:</strong> ${roomTitle} at ${upcoming.startTime}. Check in within 10 min!`;
+        } else {
+          const left = Math.max(0, 10 + minDiff);
+          msg.innerHTML = `<strong>Active Now:</strong> ${roomTitle} started at ${upcoming.startTime}. Check in within ${left}m before auto-release!`;
+        }
+        btn.onclick = () => openCheckinModal(upcoming.id);
+        banner.style.display = "block";
+      } else { banner.style.display = "none"; }
+    }
+
+    setInterval(() => { updateClock(); runAutoRelease(); checkReminders(); renderAll(); }, 60000);
+
+    function updateClock() {
+      const now = new Date();
+      const el = document.getElementById("clock-time-display");
+      if (el) el.textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')} CAT`;
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    /* =========================================================
+       BOOKING LOGIC
+       ========================================================= */
+    function findOverlap(roomId, dateStr, startStr, durH, excludeId = null) {
+      const room = App.rooms.find(r => r.id === roomId);
+      if (room && room.isBlocked) return { reason:`Room blocked: ${room.blockReason||'Maintenance'}` };
+      const ns = parseDT(dateStr, startStr), ne = new Date(ns.getTime() + durH * 3600000);
+      const conflicts = App.bookings.filter(b => {
+        if (b.roomId !== roomId || b.date !== dateStr) return false;
+        if (excludeId && b.id === excludeId) return false;
+        if (b.status === "Cancelled" || b.status === "Auto-Released") return false;
+        return ns < parseDT(b.date, b.endTime) && ne > parseDT(b.date, b.startTime);
+      });
+      return conflicts.length > 0 ? conflicts[0] : null;
+    }
+
+    function calcEnd(startStr, durH) {
+      const [h,m] = startStr.split(":").map(Number);
+      return `${String(h+Number(durH)).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+    }
+
+    /* =========================================================
+       QR CODE
+       ========================================================= */
+    function drawQr(canvasId, text) {
+      const canvas = document.getElementById(canvasId); if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const size = 175; canvas.width = size; canvas.height = size;
+      ctx.fillStyle = "#ffffff"; ctx.fillRect(0,0,size,size);
+      const G = 21, cell = Math.floor(size/G), off = Math.floor((size-G*cell)/2);
+      let hash = 0;
+      for (let i = 0; i < text.length; i++) { hash = ((hash<<5)-hash)+text.charCodeAt(i); hash|=0; }
+      function isFinder(r,c) { return (r<7&&c<7)||(r<7&&c>=G-7)||(r>=G-7&&c<7); }
+      function drawFinder(sr,sc) {
+        ctx.fillStyle="#0f172a"; ctx.fillRect(off+sc*cell, off+sr*cell, 7*cell, 7*cell);
+        ctx.fillStyle="#ffffff"; ctx.fillRect(off+(sc+1)*cell, off+(sr+1)*cell, 5*cell, 5*cell);
+        ctx.fillStyle="#0284c7"; ctx.fillRect(off+(sc+2)*cell, off+(sr+2)*cell, 3*cell, 3*cell);
+      }
+      drawFinder(0,0); drawFinder(0,G-7); drawFinder(G-7,0);
+      ctx.fillStyle="#0f172a";
+      for (let i=8;i<G-8;i++) { if(i%2===0){ctx.fillRect(off+i*cell,off+6*cell,cell,cell);ctx.fillRect(off+6*cell,off+i*cell,cell,cell);} }
+      for (let r=0;r<G;r++) for (let c=0;c<G;c++) {
+        if (isFinder(r,c)) continue;
+        if ((r===6&&c>=7&&c<=G-8)||(c===6&&r>=7&&r<=G-8)) continue;
+        if (Math.abs(Math.sin((r*13+c*17)+hash)) > 0.48) { ctx.fillStyle="#0f172a"; ctx.fillRect(off+c*cell, off+r*cell, cell-0.5, cell-0.5); }
+      }
+    }
+
+    /* =========================================================
+       RENDERERS
+       ========================================================= */
+    function getCode(roomId) { const r = App.rooms.find(r=>r.id===roomId); return r?r.code:roomId; }
+
+    function renderRooms() {
+      const el = document.getElementById("room-grid-container"); if (!el) return;
+      const f = App.filters;
+      let list = App.rooms.filter(room => {
+        if (f.q) { const q=f.q.toLowerCase(); if(!room.name.toLowerCase().includes(q)&&!room.code.toLowerCase().includes(q)&&!room.building.toLowerCase().includes(q)&&!room.type.toLowerCase().includes(q)) return false; }
+        if (f.building!=="all" && room.building!==f.building) return false;
+        if (f.type!=="all"     && room.type!==f.type)         return false;
+        if (room.capacity < f.cap) return false;
+        for (const a of f.amenities) { if (!room.amenities.includes(a)) return false; }
+        if (f.favs && !App.favorites.has(room.id)) return false;
+        if (f.status!=="all" && evalRoom(room).status!==f.status) return false;
+        return true;
+      });
+      if (f.sort==="capacity-asc")  list.sort((a,b)=>a.capacity-b.capacity);
+      else if (f.sort==="capacity-desc") list.sort((a,b)=>b.capacity-a.capacity);
+      else if (f.sort==="name-asc")  list.sort((a,b)=>a.name.localeCompare(b.name));
+      document.getElementById("displayed-rooms-count").textContent = list.length;
+      updateStats();
+      if (!list.length) {
+        el.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔍</div><h3>No Matching Rooms Found</h3><p>Try adjusting your search or filters.</p><button class="btn btn-primary btn-sm" onclick="resetFilters()">Reset Filters</button></div>`;
+        return;
+      }
+      el.innerHTML = list.map(room => {
+        const ev = evalRoom(room), isFav = App.favorites.has(room.id);
+        const dotCls = ev.status==="available"?"avail":ev.status==="soon"?"soon":ev.status==="occupied"?"busy":"maint";
+        return `<article class="room-card" id="card-${room.id}">
+          <div class="room-card-top">
+            <span class="room-code-tag">${room.code}</span>
+            <button class="fav-btn ${isFav?'favorited':''}" onclick="toggleFav('${room.id}',event)" title="${isFav?'Remove from favourites':'Add to favourites'}" aria-label="Toggle favourite">${isFav?'❤️':'🤍'}</button>
+          </div>
+          <h3 class="room-name">${room.name}</h3>
+          <div class="room-building">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span>${room.building} · ${room.floor}</span>
+          </div>
+          <div class="room-meta-tags">
+            <span class="meta-tag"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><strong>${room.capacity}</strong> seats</span>
+            <span class="meta-tag">🏷️ ${room.type}</span>
+            ${room.amenities.map(a=>`<span class="meta-tag">✓ ${a}</span>`).join("")}
+          </div>
+          <div class="room-status-indicator ${dotCls}">
+            <div style="display:flex;align-items:center;gap:.4rem;"><span class="pulse-dot ${dotCls}"></span><span>${ev.label}</span></div>
+            <span style="font-size:.72rem;font-weight:500;">${ev.subtext}</span>
+          </div>
+          <div class="room-card-actions">
+            <button class="btn btn-outline btn-sm" onclick="viewInTimetable('${room.id}')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+              Schedule
+            </button>
+            <button class="btn btn-primary btn-sm" ${room.isBlocked?'disabled title="Room is under maintenance"':`onclick="openBooking('${room.id}')"`}>${room.isBlocked?'Blocked':'Book Room'}</button>
+          </div>
+        </article>`;
+      }).join("");
+    }
+
+    function updateStats() {
+      let avail=0, soon=0, busy=0;
+      App.rooms.forEach(r => { const s=evalRoom(r).status; if(s==="available")avail++; else if(s==="soon")soon++; else if(s==="occupied")busy++; });
+      document.getElementById("stat-avail-count").textContent = avail;
+      document.getElementById("stat-soon-count").textContent  = soon;
+      document.getElementById("stat-busy-count").textContent  = busy;
+      document.getElementById("stat-total-count").textContent = App.rooms.length;
+    }
+
+    function renderTimetable() {
+      const table = document.getElementById("timetable-matrix-table"); if (!table) return;
+      document.getElementById("timetable-date-picker").value = App.timetableDate;
+      const hours = []; for (let h=7;h<=20;h++) hours.push(h);
+      let html = `<thead><tr><th class="room-col">Room / Location</th>${hours.map(h=>`<th>${String(h).padStart(2,'0')}:00</th>`).join("")}</tr></thead><tbody>`;
+      App.rooms.forEach(room => {
+        html += `<tr><td class="room-col-name"><div style="font-size:.8rem;color:var(--primary);font-family:var(--font-mono);">${room.code}</div><div style="font-size:.72rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px;">${room.name}</div></td>`;
+        hours.forEach(h => {
+          const slotStart = getHourSlot(h);
+          if (room.isBlocked) { html += `<td class="slot-cell blocked" title="Blocked: ${room.blockReason||'Maintenance'}">Maint</td>`; return; }
+          const conflict = findOverlap(room.id, App.timetableDate, slotStart, 1);
+          if (conflict) {
+            const short = conflict.reason ? 'Blocked' : (conflict.startTime===slotStart ? (conflict.purpose ? conflict.purpose.substring(0,10)+'..' : 'Booked') : 'Occupied');
+            const tooltip = conflict.reason || (conflict.studentId ? `${conflict.studentId} (${conflict.startTime}–${conflict.endTime}): ${conflict.purpose||'Reserved'}` : 'Reserved');
+            html += `<td class="slot-cell booked" title="${tooltip}">${short}</td>`;
+          } else { html += `<td class="slot-cell available" onclick="openBooking('${room.id}','${App.timetableDate}','${slotStart}')" title="Book ${room.name} at ${slotStart}">Free</td>`; }
+        });
+        html += `</tr>`;
+      });
+      table.innerHTML = html + `</tbody>`;
+    }
+
+    function renderBookings() {
+      const listEl  = document.getElementById("my-bookings-list");
+      const badgeEl = document.getElementById("my-bookings-count");
+      if (!listEl) return;
+      const userBks = App.bookings.filter(b => b.studentId === App.studentId);
+      badgeEl.textContent = userBks.filter(b => b.status==="Confirmed"||b.status==="Checked In").length;
+      if (!userBks.length) {
+        listEl.innerHTML = `<div style="text-align:center;padding:3.5rem 1rem;background:var(--bg-card);border-radius:var(--radius-lg);border:1px dashed var(--border-subtle);">
+          <div style="font-size:2.5rem;margin-bottom:.75rem;">📅</div>
+          <h3 style="margin-bottom:.5rem;">No Bookings Yet</h3>
+          <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:1.1rem;">No reservations under <strong>${App.studentId}</strong>.</p>
+          <button class="btn btn-primary" onclick="switchTab('rooms')">Browse Available Rooms</button>
+        </div>`;
+        return;
+      }
+      userBks.sort((a,b) => new Date(`${b.date}T${b.startTime}`) - new Date(`${a.date}T${a.startTime}`));
+      listEl.innerHTML = userBks.map(bk => {
+        const room = App.rooms.find(r => r.id === bk.roomId);
+        const statusClass = bk.status==="Checked In"?"badge-avail":bk.status==="Cancelled"||bk.status==="Auto-Released"?"badge-busy":"badge-soon";
+        const isActive = bk.status==="Confirmed"||bk.status==="Checked In";
+        return `<div class="my-bookings-card" id="booking-item-${bk.id}">
+          <div>
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;flex-wrap:wrap;">
+              <span class="booking-ref-chip">${bk.reference}</span>
+              <span class="badge ${statusClass}">${bk.status}</span>
+              <span style="font-size:.73rem;color:var(--text-muted);">Group: ${bk.groupSize}</span>
+            </div>
+            <h3 style="font-size:1.05rem;margin-bottom:.15rem;">${room?room.name:'NUST Space'}</h3>
+            <div style="font-size:.78rem;color:var(--text-muted);">${room?room.building:'Campus'} · <em>${bk.purpose}</em></div>
+            <div class="booking-time-info">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <strong>${bk.date}</strong> ·
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              ${bk.startTime}–${bk.endTime} (${bk.duration} hr${bk.duration>1?'s':''})
+            </div>
+          </div>
+          <div class="booking-actions">
+            ${isActive&&bk.status!=="Checked In"?`<button class="btn btn-sm btn-primary" onclick="openCheckinModal('${bk.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Check In</button>`:''}
+            ${isActive?`
+              <button class="btn btn-sm btn-outline" onclick="showQrModal('${bk.id}')">QR Code</button>
+              <button class="btn btn-sm btn-outline" onclick="openReschedule('${bk.id}')">Reschedule</button>
+              <button class="btn btn-sm btn-danger" onclick="cancelBooking('${bk.id}')">Cancel</button>
+            `:`<span style="font-size:.78rem;color:var(--text-subtle);">${bk.status}</span>`}
+          </div>
+        </div>`;
+      }).join("");
+    }
+
+    function renderAdmin() {
+      const maintRooms = App.rooms.filter(r=>r.isBlocked).length;
+      let occupied = 0; App.rooms.forEach(r=>{ if(evalRoom(r).status==="occupied") occupied++; });
+      const occupancy = App.rooms.length ? Math.round((occupied/App.rooms.length)*100) : 0;
+      document.getElementById("admin-kpi-rooms").textContent     = App.rooms.length;
+      document.getElementById("admin-kpi-bookings").textContent  = App.bookings.length;
+      document.getElementById("admin-kpi-occupancy").textContent = `${occupancy}%`;
+      document.getElementById("admin-kpi-maint").textContent     = maintRooms;
+      renderAdminRoomsTable(); renderAdminBookingsTable();
+      drawPopularChart(); drawPeakChart();
+    }
+
+    function renderAdminRoomsTable(q="") {
+      const tbody = document.getElementById("admin-rooms-tbody"); if (!tbody) return;
+      const list = App.rooms.filter(r => !q || r.code.toLowerCase().includes(q.toLowerCase()) || r.name.toLowerCase().includes(q.toLowerCase()) || r.building.toLowerCase().includes(q.toLowerCase()));
+      tbody.innerHTML = list.map(room => {
+        const ev = evalRoom(room);
+        return `<tr>
+          <td><strong style="font-family:var(--font-mono);color:var(--primary);">${room.code}</strong></td>
+          <td><strong>${room.name}</strong><br><small style="color:var(--text-muted);">${room.floor}</small></td>
+          <td>${room.building}</td><td>${room.type}</td><td>${room.capacity} pax</td>
+          <td><span class="badge ${ev.badgeClass}">${ev.label}</span></td>
+          <td><div style="display:flex;gap:.3rem;flex-wrap:wrap;">
+            <button class="btn btn-sm btn-outline" onclick="openEditRoom('${room.id}')">Edit</button>
+            <button class="btn btn-sm ${room.isBlocked?'btn-primary':'btn-outline'}" onclick="toggleMaint('${room.id}')">${room.isBlocked?'Unblock':'Block'}</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteRoom('${room.id}')">Delete</button>
+          </div></td>
+        </tr>`;
+      }).join("");
+    }
+
+    function renderAdminBookingsTable(q="") {
+      const tbody = document.getElementById("admin-bookings-tbody"); if (!tbody) return;
+      const list = App.bookings.filter(b => !q || b.reference.toLowerCase().includes(q.toLowerCase()) || b.studentId.toLowerCase().includes(q.toLowerCase()) || b.purpose.toLowerCase().includes(q.toLowerCase()));
+      tbody.innerHTML = list.map(b => {
+        const room = App.rooms.find(r=>r.id===b.roomId);
+        const canCancel = b.status==="Confirmed"||b.status==="Checked In";
+        const cls = b.status==="Checked In"?"badge-avail":b.status==="Confirmed"?"badge-soon":"badge-busy";
+        return `<tr>
+          <td><strong style="font-family:var(--font-mono);">${b.reference}</strong></td>
+          <td><span style="font-family:var(--font-mono);">${b.studentId}</span></td>
+          <td>${room?room.code:b.roomId}</td>
+          <td>${b.date}<br><small style="color:var(--text-muted);">${b.startTime}–${b.endTime}</small></td>
+          <td>${b.purpose}</td>
+          <td><span class="badge ${cls}">${b.status}</span></td>
+          <td>${canCancel?`<button class="btn btn-sm btn-danger" onclick="adminCancel('${b.id}')">Override / Cancel</button>`:`<span style="font-size:.73rem;color:var(--text-muted);">—</span>`}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    function safeRoundRect(ctx, x, y, w, h, r = 0) {
+      const radius = Math.min(typeof r === 'number' ? r : (Array.isArray(r) ? (r[0] || 0) : 0), Math.abs(w) / 2, Math.abs(h) / 2);
+      if (typeof ctx.roundRect === 'function' && radius > 0) {
+        try {
+          ctx.roundRect(x, y, w, h, radius);
+          return;
+        } catch (e) {}
+      }
+      ctx.rect(x, y, w, h);
+    }
+
+    function drawPopularChart() {
+      const canvas = document.getElementById("chart-popular-rooms"); if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const W = canvas.parentElement.clientWidth||360, H = 215;
+      canvas.width=W; canvas.height=H; ctx.clearRect(0,0,W,H);
+      const counts = {}; App.rooms.forEach(r=>counts[r.id]=0); App.bookings.forEach(b=>{if(counts[b.roomId]!==undefined)counts[b.roomId]++;});
+      const sorted = App.rooms.map(r=>({code:r.code,count:counts[r.id]||0})).sort((a,b)=>b.count-a.count).slice(0,5);
+      const maxC = Math.max(...sorted.map(r=>r.count), 5);
+      const barH=22, gap=14, startY=18, labelW=110, chartW=W-labelW-45;
+      const isDark = document.body.classList.contains("dark-mode");
+      const tc = isDark?"#94a3b8":"#475569", bc = isDark?"#38bdf8":"#0284c7";
+      ctx.font = "11px Inter, sans-serif";
+      sorted.forEach((item,i) => {
+        const y = startY+i*(barH+gap);
+        ctx.fillStyle=tc; ctx.textAlign="right"; ctx.fillText(item.code, labelW-8, y+15);
+        ctx.fillStyle=isDark?"#1e293b":"#e2e8f0"; ctx.beginPath(); safeRoundRect(ctx,labelW,y,chartW,barH,4); ctx.fill();
+        const bW = Math.max((item.count/maxC)*chartW, 6);
+        ctx.fillStyle=bc; ctx.beginPath(); safeRoundRect(ctx,labelW,y,bW,barH,4); ctx.fill();
+        ctx.fillStyle=tc; ctx.textAlign="left"; ctx.fillText(`${item.count}`, labelW+bW+7, y+15);
+      });
+    }
+
+    function drawPeakChart() {
+      const canvas = document.getElementById("chart-peak-hours"); if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const W = canvas.parentElement.clientWidth||360, H = 215;
+      canvas.width=W; canvas.height=H; ctx.clearRect(0,0,W,H);
+      const hm = {}; for(let h=7;h<=20;h++) hm[h]=0;
+      App.bookings.forEach(b => { if(b.status!=="Cancelled" && b.status!=="Auto-Released"){ const sh=parseInt(b.startTime,10); if(hm[sh]!==undefined) for(let i=0;i<b.duration;i++){if(hm[sh+i]!==undefined)hm[sh+i]++;} } });
+      const hours = Object.keys(hm).map(Number), maxC = Math.max(...Object.values(hm),4);
+      const isDark = document.body.classList.contains("dark-mode");
+      const tc = isDark?"#94a3b8":"#475569", cc = isDark?"#f59e0b":"#ea580c";
+      const pL=28, pB=24, chartW=W-pL-12, chartH=H-pB-18, colW=(chartW/hours.length)-5;
+      ctx.font = "10px Inter, sans-serif";
+      hours.forEach((h,idx) => {
+        const count=hm[h], colH=(count/maxC)*chartH, x=pL+idx*(chartW/hours.length)+2.5, y=H-pB-colH;
+        ctx.fillStyle=cc; ctx.beginPath(); safeRoundRect(ctx,x,y,colW,colH||2,3); ctx.fill();
+        if(idx%2===0){ctx.fillStyle=tc; ctx.textAlign="center"; ctx.fillText(`${h}h`,x+colW/2,H-6);}
+      });
+    }
+
+    function renderAll() {
+      renderRooms(); renderTimetable(); renderBookings();
+      if (App.role==="admin") renderAdmin();
+    }
+
+    /* =========================================================
+       NAV & ROLE
+       ========================================================= */
+    function switchTab(tab) {
+      App.tab = tab;
+      document.querySelectorAll(".nav-tab-btn").forEach(b=>b.classList.remove("active"));
+      const btn = document.getElementById(`tab-nav-${tab}`); if(btn) btn.classList.add("active");
+      document.querySelectorAll(".view-panel").forEach(p=>p.style.display="none");
+      const panel = document.getElementById(`view-${tab}`); if(panel) panel.style.display="block";
+      const hero = document.getElementById("hero-section"); if(hero) hero.style.display = tab==="rooms"?"block":"none";
+      if(tab==="rooms")      renderRooms();
+      if(tab==="timetable") renderTimetable();
+      if(tab==="bookings")  renderBookings();
+      if(tab==="admin")     renderAdmin();
+    }
+
+    // Keep backward compat with onclick="switchMainTab"
+    function switchMainTab(t) { switchTab(t); }
+
+    function setUserRole(role) {
+      App.role = role; localStorage.setItem(SK.ROLE, role);
+      document.getElementById("role-btn-student").classList.toggle("active", role==="student");
+      document.getElementById("role-btn-admin").classList.toggle("active", role==="admin");
+      const adminTab = document.getElementById("tab-nav-admin");
+      if (role === "admin") {
+        adminTab.style.display="inline-flex";
+        document.getElementById("active-user-id").textContent="Dr. T. Moyo (Admin)";
+        document.getElementById("user-avatar-initial").textContent="A";
+        showToast("Switched to Admin. Full faculty management access enabled.","success");
+      } else {
+        adminTab.style.display="none";
+        document.getElementById("active-user-id").textContent=App.studentId;
+        document.getElementById("user-avatar-initial").textContent="S";
+        if(App.tab==="admin") switchTab("rooms");
+        showToast(`Switched to Student (${App.studentId}).`,"success");
+      }
+      checkReminders(); renderAll();
+    }
+
+    function toggleDarkMode() {
+      const isDark = document.body.classList.toggle("dark-mode");
+      localStorage.setItem(SK.THEME, isDark?"dark":"light");
+      document.getElementById("theme-icon").textContent = isDark?"☀️":"🌙";
+      if(App.tab==="admin"){drawPopularChart();drawPeakChart();}
+    }
+
+    /* Filter Panel Toggle */
+    function toggleFilterPanel() {
+      const body = document.getElementById("filter-panel-body");
+      const chev = document.getElementById("filter-chevron");
+      const isOpen = body.classList.toggle("open");
+      chev.classList.toggle("open", isOpen);
+    }
+
+    /* Filters */
+    function handleSearchInput(v) { App.filters.q = v.trim(); renderRooms(); }
+    function handleTypeFilter(v)   { App.filters.type = v; renderRooms(); }
+    function setBuildingFilter(b, el) {
+      App.filters.building = b;
+      document.querySelectorAll("#building-filter-chips .filter-chip").forEach(c=>c.classList.remove("active"));
+      if(el) el.classList.add("active");
+      renderRooms();
+    }
+    function handleCapacitySlider(v) { App.filters.cap = parseInt(v,10); document.getElementById("capacity-slider-val").textContent=`${v}+`; renderRooms(); }
+    function handleStatusFilter(v)   { App.filters.status = v; renderRooms(); }
+    function handleSortChange(v)     { App.filters.sort = v; renderRooms(); }
+    function toggleAmenityFilter(a)  { if(App.filters.amenities.has(a)) App.filters.amenities.delete(a); else App.filters.amenities.add(a); renderRooms(); }
+    function toggleFavsOnly(c)       { App.filters.favs = c; renderRooms(); }
+
+    function resetFilters() {
+      App.filters = { q:"", building:"all", type:"all", cap:1, status:"all", amenities:new Set(), favs:false, sort:"default" };
+      document.getElementById("hero-search-input").value="";
+      document.getElementById("hero-type-select").value="all";
+      document.getElementById("filter-capacity-slider").value="1";
+      document.getElementById("capacity-slider-val").textContent="1+";
+      document.getElementById("filter-status-select").value="all";
+      document.getElementById("sort-rooms-select").value="default";
+      document.getElementById("filter-favs-only").checked=false;
+      document.querySelectorAll("#building-filter-chips .filter-chip").forEach(c=>c.classList.toggle("active",c.dataset.building==="all"));
+      document.querySelectorAll(".amenities-row input[type='checkbox']:not(#filter-favs-only)").forEach(cb=>cb.checked=false);
+      renderRooms(); showToast("Filters reset.","info");
+    }
+    function resetAllFilters() { resetFilters(); }
+
+    function toggleFav(roomId, event) {
+      if (event) event.stopPropagation();
+      if (App.favorites.has(roomId)) { App.favorites.delete(roomId); showToast("Removed from favourites.","info"); }
+      else { App.favorites.add(roomId); showToast("Added to favourites! ❤️","success"); }
+      save(); renderRooms();
+    }
+    function toggleFavoriteRoom(r,e) { toggleFav(r,e); }
+
+    function forceRefreshStatuses() { renderAll(); showToast("Room statuses refreshed.","success"); }
+
+    function triggerFindMeARoomNow() {
+      const avail = App.rooms.filter(r=>evalRoom(r).status==="available");
+      if (!avail.length) { showToast("All rooms are currently in use. Check the timetable for free slots.","warning"); return; }
+      let best = avail.find(r=>App.favorites.has(r.id));
+      if (!best) best = avail.find(r=>r.type==="Study Room"||r.type==="Computer Lab");
+      if (!best) best = avail[0];
+      showToast(`🎯 Found: ${best.name} — opening booking…`,"success");
+      const h = Math.min(Math.max(new Date().getHours(),7),20);
+      openBooking(best.id, getTodayDateString(0), getHourSlot(h));
+    }
+
+    function viewInTimetable(roomId) {
+      switchTab("timetable");
+      const code = getCode(roomId);
+      setTimeout(() => {
+        const rows = document.querySelectorAll(".timetable-matrix tbody tr");
+        for (const row of rows) {
+          if (row.textContent.includes(code)) { row.scrollIntoView({behavior:"smooth",block:"center"}); row.style.outline="2px solid var(--primary)"; setTimeout(()=>row.style.outline="",2500); break; }
+        }
+      }, 150);
+    }
+    function viewRoomInTimetable(id) { viewInTimetable(id); }
+
+    /* Modals */
+    function openModal(id)  { const m=document.getElementById(id); if(m) m.classList.add("active"); }
+    function closeModal(id) { const m=document.getElementById(id); if(m) m.classList.remove("active"); }
+    document.addEventListener("keydown", e => { if(e.key==="Escape") document.querySelectorAll(".modal-overlay.active").forEach(m=>m.classList.remove("active")); });
+
+    function openBooking(roomId, presetDate=null, presetTime=null) {
+      const room = App.rooms.find(r=>r.id===roomId); if(!room) return;
+      if (room.isBlocked) { showToast(`Cannot book: ${room.name} is blocked (${room.blockReason||'Maintenance'}).`,"error"); return; }
+      App.bookingRoom = room;
+      document.getElementById("booking-room-id").value = room.id;
+      document.getElementById("booking-student-id").value = App.studentId;
+      document.getElementById("booking-room-summary").innerHTML = `
+        <div class="booking-room-summary-row"><strong>${room.name}</strong><span class="room-code-tag">${room.code}</span></div>
+        <div style="color:var(--text-muted);font-size:.78rem;">${room.building} · ${room.floor} · Capacity: <strong>${room.capacity}</strong></div>
+      `;
+      const di = document.getElementById("booking-date"); di.min=getTodayDateString(0); di.value=presetDate||getTodayDateString(0);
+      const ts = document.getElementById("booking-start-time"); ts.innerHTML="";
+      for(let h=7;h<=20;h++){const o=document.createElement("option");o.value=getHourSlot(h);o.textContent=`${getHourSlot(h)} (${h<=11?'Morning':h<=16?'Afternoon':'Evening'})`;ts.appendChild(o);}
+      if(presetTime) ts.value=presetTime; else { const nh=Math.min(Math.max(new Date().getHours()+1,7),20); ts.value=getHourSlot(nh); }
+      document.getElementById("booking-duration").value="1";
+      document.getElementById("booking-group-size").value="2";
+      document.getElementById("booking-group-size").max=room.capacity;
+      validateBooking(); openModal("modal-booking");
+    }
+    function openBookingModal(r,d,t) { openBooking(r,d,t); }
+
+    function validateCapacity() {
+      validateBooking();
+    }
+    function validateCapacityAgainstRoom() { validateBooking(); }
+
+    function validateBooking() {
+      const roomId = document.getElementById("booking-room-id").value;
+      const date   = document.getElementById("booking-date").value;
+      const time   = document.getElementById("booking-start-time").value;
+      const dur    = parseInt(document.getElementById("booking-duration").value,10);
+      const groupEl = document.getElementById("booking-group-size");
+      const size   = parseInt(groupEl ? groupEl.value : "1", 10);
+      const alertBox = document.getElementById("booking-conflict-alert");
+      const alertMsg = document.getElementById("booking-conflict-details");
+      const warn     = document.getElementById("capacity-warning");
+      const btn      = document.getElementById("btn-confirm-booking");
+      if(!roomId||!date||!time) return;
+
+      let hasConflict = false;
+      const conflict = findOverlap(roomId, date, time, dur);
+      if(conflict){
+        alertBox.style.display="block";
+        alertMsg.innerHTML=conflict.reason||`Clash with <strong>#${conflict.reference}</strong> (${conflict.startTime}–${conflict.endTime}). Choose another time.`;
+        hasConflict = true;
+      } else {
+        alertBox.style.display="none";
+      }
+
+      let hasCapacityIssue = false;
+      const room = App.bookingRoom;
+      if(room && size > room.capacity){
+        warn.style.display="block";
+        warn.textContent=`Group size (${size}) exceeds room capacity of ${room.capacity}!`;
+        hasCapacityIssue = true;
+      } else {
+        warn.style.display="none";
+      }
+
+      if (btn) btn.disabled = hasConflict || hasCapacityIssue;
+    }
+    function validateBookingOverlap() { validateBooking(); }
+
+    function handleBookingFormSubmit(event) {
+      event.preventDefault();
+      const roomId  = document.getElementById("booking-room-id").value;
+      const date    = document.getElementById("booking-date").value;
+      const time    = document.getElementById("booking-start-time").value;
+      const dur     = parseInt(document.getElementById("booking-duration").value,10);
+      const group   = parseInt(document.getElementById("booking-group-size").value,10);
+      const purpose = document.getElementById("booking-purpose").value;
+      const student = document.getElementById("booking-student-id").value;
+      if (findOverlap(roomId, date, time, dur)) { showToast("Cannot book: conflict detected!","error"); validateBooking(); return; }
+      const ref = `NUST-BK-${Math.floor(1000+Math.random()*9000)}`;
+      const bk  = { id:`bk-${Date.now()}`, reference:ref, roomId, studentId:student, date, startTime:time, duration:dur, endTime:calcEnd(time,dur), groupSize:group, purpose, status:"Confirmed", checkedInAt:null, createdAt:new Date().toISOString() };
+      App.bookings.unshift(bk); save();
+      closeModal("modal-booking");
+      showConfirmModal(bk);
+      showToast(`Booking ${ref} confirmed!`,"success");
+      checkReminders(); renderAll();
+    }
+
+    function showConfirmModal(bk) {
+      const room = App.rooms.find(r=>r.id===bk.roomId);
+      document.getElementById("confirm-ref-display").textContent = bk.reference;
+      document.getElementById("confirm-details-box").innerHTML = `
+        <div style="margin-bottom:.3rem;"><strong>Room:</strong> ${room?room.name:bk.roomId} (${room?room.code:''})</div>
+        <div style="margin-bottom:.3rem;"><strong>Location:</strong> ${room?`${room.building} · ${room.floor}`:''}</div>
+        <div style="margin-bottom:.3rem;"><strong>Date &amp; Time:</strong> ${bk.date} · ${bk.startTime}–${bk.endTime} (${bk.duration} hr)</div>
+        <div style="margin-bottom:.3rem;"><strong>Student ID:</strong> ${bk.studentId}</div>
+        <div><strong>Purpose:</strong> ${bk.purpose}</div>
+      `;
+      drawQr("qr-canvas", bk.reference);
+      App.lastBk = bk;
+      openModal("modal-confirmation");
+    }
+    function showBookingConfirmationModal(bk) { showConfirmModal(bk); }
+
+    function showQrModal(bkId) { const bk=App.bookings.find(b=>b.id===bkId); if(bk) showConfirmModal(bk); }
+    function showBookingQrModal(id) { showQrModal(id); }
+
+    function downloadIcsCalendar() {
+      const bk = App.lastBk; if (!bk) return;
+      const room = App.rooms.find(r=>r.id===bk.roomId);
+      const name = room?room.name:"NUST Study Space";
+      const loc  = room?`${room.building}, ${room.floor}`:"NUST Bulawayo";
+      const s    = bk.date.replace(/-/g,"")+`T${bk.startTime.replace(":","")  }00`;
+      const e    = bk.date.replace(/-/g,"")+`T${bk.endTime.replace(":","")    }00`;
+      const ics  = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//NUST Zimbabwe//SpaceFinder//EN","BEGIN:VEVENT",`UID:${bk.reference}@nust.ac.zw`,`DTSTAMP:${s}`,`DTSTART:${s}`,`DTEND:${e}`,`SUMMARY:NUST Booking: ${name}`,`DESCRIPTION:Ref #${bk.reference}. Purpose: ${bk.purpose}.`,`LOCATION:${loc}`,"STATUS:CONFIRMED","END:VEVENT","END:VCALENDAR"].join("\r\n");
+      const blob = new Blob([ics],{type:"text/calendar;charset=utf-8"});
+      const url  = URL.createObjectURL(blob);
+      const link = document.createElement("a"); link.href=url; link.download=`${bk.reference}-calendar.ics`;
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
+      showToast("Calendar file downloaded!","success");
+    }
+
+    function openCheckinModal(bkId) {
+      const bk = App.bookings.find(b=>b.id===bkId); if(!bk) return;
+      App.checkinBooking = bk;
+      const room = App.rooms.find(r=>r.id===bk.roomId);
+      document.getElementById("checkin-scan-status").textContent=`Validating ${bk.reference}…`;
+      document.getElementById("checkin-target-info").innerHTML=`<strong>${room?room.name:'Room'}</strong> (${room?room.building:''})<br>Slot: ${bk.date} @ ${bk.startTime}–${bk.endTime}`;
+      openModal("modal-checkin");
+    }
+    function openCheckInModal(id) { openCheckinModal(id); }
+
+    function performCheckInAction() {
+      const bk = App.checkinBooking; if(!bk) return;
+      bk.status="Checked In"; bk.checkedInAt=new Date().toISOString();
+      save(); closeModal("modal-checkin"); checkReminders(); renderAll();
+      showToast(`✅ Check-in confirmed for ${bk.reference}!`,"success");
+    }
+
+    function cancelBooking(bkId) {
+      if(!confirm("Cancel this booking? The slot will be freed immediately.")) return;
+      const bk=App.bookings.find(b=>b.id===bkId);
+      if(bk){bk.status="Cancelled";save();renderAll();checkReminders();showToast(`Booking ${bk.reference} cancelled.`,"info");}
+    }
+    function cancelStudentBooking(id) { cancelBooking(id); }
+
+    function openReschedule(bkId) {
+      const bk=App.bookings.find(b=>b.id===bkId); if(!bk) return;
+      App.rescheduleBooking=bk;
+      const room=App.rooms.find(r=>r.id===bk.roomId);
+      document.getElementById("reschedule-booking-id").value=bk.id;
+      document.getElementById("reschedule-summary").innerHTML=`<strong>Rescheduling:</strong> ${room?room.name:bk.roomId} (${bk.reference})<br>Current: ${bk.date} · ${bk.startTime}–${bk.endTime}`;
+      const di=document.getElementById("reschedule-date"); di.min=getTodayDateString(0); di.value=bk.date;
+      const ts=document.getElementById("reschedule-start-time"); ts.innerHTML="";
+      for(let h=7;h<=20;h++){const o=document.createElement("option");o.value=getHourSlot(h);o.textContent=getHourSlot(h);ts.appendChild(o);} ts.value=bk.startTime;
+      document.getElementById("reschedule-duration").value=String(bk.duration);
+      validateReschedule(); openModal("modal-reschedule");
+    }
+    function openRescheduleModal(id) { openReschedule(id); }
+
+    function validateReschedule() {
+      const bk=App.rescheduleBooking; if(!bk) return;
+      const date=document.getElementById("reschedule-date").value;
+      const time=document.getElementById("reschedule-start-time").value;
+      const dur =parseInt(document.getElementById("reschedule-duration").value,10);
+      const box =document.getElementById("reschedule-conflict-alert");
+      const msg =document.getElementById("reschedule-conflict-details");
+      const btn =document.getElementById("btn-save-reschedule");
+      const c   =findOverlap(bk.roomId,date,time,dur,bk.id);
+      if(c){box.style.display="block";msg.textContent=c.reason||`Slot occupied by #${c.reference} (${c.startTime}–${c.endTime}).`;btn.disabled=true;}
+      else{box.style.display="none";btn.disabled=false;}
+    }
+    function validateRescheduleOverlap() { validateReschedule(); }
+
+    function saveRescheduledBooking() {
+      const bk=App.rescheduleBooking; if(!bk) return;
+      const date=document.getElementById("reschedule-date").value;
+      const time=document.getElementById("reschedule-start-time").value;
+      const dur =parseInt(document.getElementById("reschedule-duration").value,10);
+      if(findOverlap(bk.roomId,date,time,dur,bk.id)){showToast("Cannot reschedule: conflict!","error");return;}
+      bk.date=date;bk.startTime=time;bk.duration=dur;bk.endTime=calcEnd(time,dur);bk.status="Confirmed";bk.checkedInAt=null;
+      save(); closeModal("modal-reschedule"); renderAll(); checkReminders();
+      showToast(`Reservation ${bk.reference} rescheduled to ${bk.date} @ ${bk.startTime}!`,"success");
+    }
+
+    function handleTimetableDateChange(v) { App.timetableDate=v; renderTimetable(); }
+    function setTimetableToday()    { App.timetableDate=getTodayDateString(0); renderTimetable(); }
+    function setTimetableTomorrow() { App.timetableDate=getTodayDateString(1); renderTimetable(); }
+    function exportPrintableTimetable() {
+      document.getElementById("print-timestamp").textContent=`Generated: ${new Date().toLocaleString()} · NUST SpaceFinder`;
+      window.print();
+    }
+
+    /* Admin */
+    function openAddRoomModal() {
+      document.getElementById("admin-room-modal-title").textContent="Add Campus Room";
+      ["admin-room-edit-id","admin-room-code","admin-room-name","admin-room-block-reason"].forEach(id=>document.getElementById(id).value="");
+      document.getElementById("admin-room-capacity").value="30";
+      document.getElementById("admin-room-floor").value="Ground Floor";
+      document.getElementById("admin-room-is-blocked").checked=false;
+      document.getElementById("admin-block-reason-box").style.display="none";
+      document.querySelectorAll("#admin-amenities-group input[type='checkbox']").forEach(cb=>{cb.checked=cb.value==="Wi-Fi"||cb.value==="Whiteboard";});
+      openModal("modal-admin-room");
+    }
+
+    function openEditRoom(roomId) {
+      const room=App.rooms.find(r=>r.id===roomId); if(!room) return;
+      document.getElementById("admin-room-modal-title").textContent=`Edit Room: ${room.code}`;
+      document.getElementById("admin-room-edit-id").value=room.id;
+      document.getElementById("admin-room-code").value=room.code;
+      document.getElementById("admin-room-name").value=room.name;
+      document.getElementById("admin-room-building").value=room.building;
+      document.getElementById("admin-room-type").value=room.type;
+      document.getElementById("admin-room-capacity").value=room.capacity;
+      document.getElementById("admin-room-floor").value=room.floor;
+      document.getElementById("admin-room-is-blocked").checked=room.isBlocked;
+      document.getElementById("admin-room-block-reason").value=room.blockReason||"";
+      document.getElementById("admin-block-reason-box").style.display=room.isBlocked?"block":"none";
+      document.querySelectorAll("#admin-amenities-group input[type='checkbox']").forEach(cb=>{cb.checked=room.amenities.includes(cb.value);});
+      openModal("modal-admin-room");
+    }
+    function openEditRoomModal(id) { openEditRoom(id); }
+
+    function toggleAdminBlockReason(c) { document.getElementById("admin-block-reason-box").style.display=c?"block":"none"; }
+
+    function handleAdminRoomFormSubmit(event) {
+      event.preventDefault();
+      const editId=document.getElementById("admin-room-edit-id").value;
+      const code=document.getElementById("admin-room-code").value.trim();
+      const name=document.getElementById("admin-room-name").value.trim();
+      const building=document.getElementById("admin-room-building").value;
+      const type=document.getElementById("admin-room-type").value;
+      const capacity=parseInt(document.getElementById("admin-room-capacity").value,10);
+      const floor=document.getElementById("admin-room-floor").value.trim();
+      const isBlocked=document.getElementById("admin-room-is-blocked").checked;
+      const blockReason=document.getElementById("admin-room-block-reason").value.trim();
+      const amenities=[];document.querySelectorAll("#admin-amenities-group input[type='checkbox']:checked").forEach(cb=>amenities.push(cb.value));
+      if(editId){
+        const room=App.rooms.find(r=>r.id===editId);
+        if(room){Object.assign(room,{code,name,building,type,capacity,floor,amenities,isBlocked,blockReason:isBlocked?(blockReason||"Maintenance"):""});showToast(`Room ${code} updated.`,"success");}
+      } else {
+        App.rooms.push({id:`room-${code.toLowerCase().replace(/[^a-z0-9]/g,'-')}-${Date.now()}`,code,name,building,type,capacity,floor,amenities,isBlocked,blockReason:isBlocked?(blockReason||"Maintenance"):""});
+        showToast(`New room ${code} added.`,"success");
+      }
+      save(); closeModal("modal-admin-room"); renderAll();
+    }
+
+    function toggleMaint(roomId) {
+      const room=App.rooms.find(r=>r.id===roomId); if(!room) return;
+      if(!room.isBlocked){
+        const reason=prompt("Enter maintenance / block reason:","Scheduled Maintenance"); if(reason===null) return;
+        room.isBlocked=true; room.blockReason=reason.trim()||"Maintenance";
+        showToast(`Room ${room.code} blocked: ${room.blockReason}`,"warning");
+      } else { room.isBlocked=false; room.blockReason=""; showToast(`Room ${room.code} unblocked and available.`,"success"); }
+      save(); renderAll();
+    }
+    function toggleRoomMaintenance(id) { toggleMaint(id); }
+
+    function deleteRoom(roomId) {
+      const room=App.rooms.find(r=>r.id===roomId); if(!room) return;
+      if(!confirm(`Delete room "${room.name}" (${room.code})? This cannot be undone.`)) return;
+      App.rooms=App.rooms.filter(r=>r.id!==roomId); save(); renderAll(); showToast(`Room ${room.code} deleted.`,"info");
+    }
+
+    function adminCancel(bkId) {
+      const bk=App.bookings.find(b=>b.id===bkId); if(!bk) return;
+      const reason=prompt(`Reason for cancelling booking #${bk.reference} by ${bk.studentId}:`,"Departmental priority");
+      if(reason===null) return;
+      bk.status="Cancelled"; save(); renderAll(); showToast(`Booking #${bk.reference} cancelled. Reason: ${reason}`,"info");
+    }
+    function adminCancelBooking(id) { adminCancel(id); }
+
+    function filterAdminRoomsTable(v)    { renderAdminRoomsTable(v);    }
+    function filterAdminBookingsTable(v) { renderAdminBookingsTable(v); }
+
+    /* Toast */
+    function showToast(msg, type="info") {
+      const c=document.getElementById("toast-container"); if(!c) return;
+      const t=document.createElement("div"); t.className=`toast-msg ${type}`;
+      const icons={success:"✅",error:"❌",warning:"⚠️",info:"ℹ️"};
+      t.innerHTML=`<span style="font-size:1.05rem;">${icons[type]||"ℹ️"}</span><div style="flex:1;">${msg}</div>`;
+      c.appendChild(t);
+      setTimeout(()=>{t.style.opacity="0";t.style.transform="translateX(100%)";setTimeout(()=>t.remove(),300);},4000);
+    }
+
+    // Script is at bottom of <body>, so DOM is already parsed — call directly.
+    initApp();
+    renderAll();
+    checkReminders();
+
+    const dismissBtn = document.getElementById("reminder-dismiss-btn");
+    if (dismissBtn) {
+      dismissBtn.onclick = () => {
+        const banner = document.getElementById("reminder-banner");
+        if (banner) banner.style.display = "none";
+      };
+    }
+  </script>
+</body>
+</html>
